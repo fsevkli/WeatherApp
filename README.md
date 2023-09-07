@@ -1,4 +1,4 @@
-This project uses Python version 3.11, download it (here)[https://www.python.org/downloads/release/python-3114/].
+This project uses Python version 3.11, download it [here](https://www.python.org/downloads/release/python-3114/).
 
 Install the Flask library using the following command:
 ~~~bash
