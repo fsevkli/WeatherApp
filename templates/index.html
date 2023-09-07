@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page!!!</title>
+    <title>Weather App</title>
 </head>
 <body>
-    hello, world!
-    Read this below:
+    This is the weather app.
 
-    {{ data }}
+    <form action="{{ url_for('search') }}" method="get">
+        <input type="text" name="query" placeholder="Search a location...">
+        <button type="submit">Search</button>
+    </form>
 </body>
 </html>

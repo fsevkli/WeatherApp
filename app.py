@@ -6,19 +6,38 @@ import json
 app = Flask(__name__)
 
 # How to get weather data from location in API
-# response = urlopen(f"https://api.weatherapi.com/v1/current.json?key=5dea31b4204948a681b182600230709&q={loc}")
+# response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key=5dea31b4204948a681b182600230709&q={loc}")
 # data_json = json.loads(response.read())
 
 @app.route('/')
 def index():
-    return render_template("index.html", data="")
+    return render_template("index.html")
 
 @app.route('/location/<loc>')
-def test(loc: str = "Paris"):
-    response = urlopen(f"https://api.weatherapi.com/v1/current.json?key=5dea31b4204948a681b182600230709&q={loc}")
-    data_json = json.loads(response.read())
+def location(loc: str = "Paris"):
+    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key=5dea31b4204948a681b182600230709&q={loc}&days=14")
+    data = json.loads(response.read())
 
-    return render_template("index.html", data=data_json)
+    # Saves data to json
+    with open(f'loc_json/loc_{loc}.json', 'w') as f:
+        json.dump(data, f, indent=4)
+
+    return render_template("location.html", data=data, 
+                           location=data['location'], current=data['current'], condition=data['current']['condition'],
+                           forecast=data['forecast']['forecastday'])
+
+@app.route('/search')
+def search():
+    query = request.args.get('query', 'Paris')
+    query = query.split(" ")[0]  # Do this because API has issues with spaces between words
+    response = urlopen(f"https://api.weatherapi.com/v1/search.json?key=5dea31b4204948a681b182600230709&q={query}")
+    data = json.loads(response.read())
+
+    # Saves data to json
+    with open(f'loc_json/search_{query}.json', 'w') as f:
+        json.dump(data, f, indent=4)
+
+    return render_template("search.html", data=data)
 
 if __name__ == '__main__':
     # Port is set to 8080, change to anything you want
