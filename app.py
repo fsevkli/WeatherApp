@@ -1,12 +1,14 @@
 import os
-from flask import Flask, render_template, request
-import requests
+from flask import Flask, render_template, request, redirect, url_for
+from urllib.request import urlopen
 import json
-
 app = Flask(__name__)
 
-# Global Constants
-TOMORROW_IO_API_KEY = 'jqDnTUjk6Hpyr5HuiMncD5zZFPJQKnLb'
+API_KEY = '5dea31b4204948a681b182600230709'
+
+# How to get weather data from location in API
+# response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={loc}")
+# data_json = json.loads(response.read())
 
 @app.route('/')
 def index():
@@ -14,53 +16,32 @@ def index():
 
 @app.route('/location/<loc>')
 def location(loc: str = "Paris"):
-    url = f"https://api.tomorrow.io/v4/weather/forecast?location={loc}&apikey={TOMORROW_IO_API_KEY}"
-    response = requests.get(url)
-    data = response.json()
-
-    # Extracting minutely data (you'll probably adjust for daily data later)
-    minutely_data = data['timelines']['minutely'][0]['values']
-
-    cloud_base = minutely_data['cloudBase']
-    cloud_ceiling = minutely_data['cloudCeiling']
-    cloud_cover = minutely_data['cloudCover']
-    dew_point = minutely_data['dewPoint']
-    freezing_rain_intensity = minutely_data['freezingRainIntensity']
-    humidity = minutely_data['humidity']
-    precipitation_probability = minutely_data['precipitationProbability']
-    pressure_surface_level = minutely_data['pressureSurfaceLevel']
-    rain_intensity = minutely_data['rainIntensity']
-    sleet_intensity = minutely_data['sleetIntensity']
-    snow_intensity = minutely_data['snowIntensity']
-    temperature = minutely_data['temperature']
-    temperature_apparent = minutely_data['temperatureApparent']
-    uv_health_concern = minutely_data['uvHealthConcern']
-    uv_index = minutely_data['uvIndex']
-    visibility = minutely_data['visibility']
-    weather_code = minutely_data['weatherCode']
-    wind_direction = minutely_data['windDirection']
-    wind_gust = minutely_data['windGust']
-    wind_speed = minutely_data['windSpeed']
-
-    # Save data to JSON
+    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={loc}&days=14")
+    data = json.loads(response.read())
+    
+    # Saves data to json
     with open(f'loc_json/loc_{loc}.json', 'w') as f:
         json.dump(data, f, indent=4)
 
-    # Pass the extracted variables to the template
-    return render_template("location.html", data=data, cloud_base=cloud_base, 
-                           cloud_ceiling=cloud_ceiling, cloud_cover=cloud_cover, dew_point=dew_point,
-                           freezing_rain_intensity=freezing_rain_intensity, humidity=humidity,
-                           precipitation_probability=precipitation_probability, pressure_surface_level=pressure_surface_level,
-                           rain_intensity=rain_intensity, sleet_intensity=sleet_intensity, snow_intensity=snow_intensity,
-                           temperature=temperature, temperature_apparent=temperature_apparent, uv_health_concern=uv_health_concern,
-                           uv_index=uv_index, visibility=visibility, weather_code=weather_code,
-                           wind_direction=wind_direction, wind_gust=wind_gust, wind_speed=wind_speed)
+    return render_template("location.html", data=data, 
+                           location=data['location'], current=data['current'], condition=data['current']['condition'],
+                           forecast=data['forecast']['forecastday'])
 
 @app.route('/search')
 def search():
     query = request.args.get('query', 'Paris')
-    return render_template("search.html", query=query)
+    query = query.split(" ")[0]  # Do this because API has issues with spaces between words
+    response = urlopen(f"https://api.weatherapi.com/v1/search.json?key={API_KEY}&q={query}")
+    data = json.loads(response.read())
+
+    # Saves data to json
+    with open(f'loc_json/search_{query}.json', 'w') as f:
+        json.dump(data, f, indent=4)
+
+    return render_template("search.html", data=data)
 
 if __name__ == '__main__':
+    # Port is set to 8080, change to anything you want
+    #   Remember, has to be 1024 or above
     port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port, debug=True)
