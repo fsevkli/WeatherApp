@@ -2,6 +2,8 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from urllib.request import urlopen
 import json
+import geocoder
+
 app = Flask(__name__)
 
 API_KEY = '5dea31b4204948a681b182600230709'
@@ -15,8 +17,13 @@ def index():
     return render_template("index.html")
 
 @app.route('/location/<loc>')
-def location(loc: str = "Paris"):
-    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={loc}&days=14")
+def location(loc: str):
+    if loc == "current":
+        latlng = get_location()
+        response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={latlng[0]},{latlng[1]}&days=14")
+    else:
+        response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={loc}&days=14")
+
     data = json.loads(response.read())
     
     # Saves data to json
@@ -39,6 +46,10 @@ def search():
         json.dump(data, f, indent=4)
 
     return render_template("search.html", data=data)
+
+def get_location():
+    g = geocoder.ip('me')
+    return g.latlng
 
 if __name__ == '__main__':
     # Port is set to 8080, change to anything you want

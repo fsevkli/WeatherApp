@@ -7,25 +7,6 @@
     <title>Location - {{ location['name'] }}</title>
 </head>
 <body>
-    <a href="{{ url_for('index') }}">Return home</a>
-    <h1>{{ location['name'] }}, {{ location['region'] }} -- {{ location['country'] }}</h1>
-    <small>Last updated: {{ current['last_updated'] }}</small>
-    <br><br>
-    <img src="{{condition['icon']}}" alt="Icon" style="width: 160px;">
-    <h2>{{current['temp_f']}}° F, {{current['temp_c']}}° C</h2>
-    <h3>Feels like: {{current['feelslike_f']}}° F, {{current['feelslike_c']}}° C</h3>
-
-    <hr>
-    <h2>-- Forecast --</h2>
-    {% for day in forecast %}
-        <h4>
-            <img src="{{day['day']['condition']['icon']}}" alt="Icon"> {{day['date']}} - AVG Temp: {{day['day']['avgtemp_f']}}° F
-        </h4>
-        <ul>
-            {% for hour in day['hour'] %}
-                <li>{{hour['time'].split(" ")[1]}} - {{hour['temp_f']}}° F</li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
+    {% include 'location_content.html' %}
 </body>
 </html>

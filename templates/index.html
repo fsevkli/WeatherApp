@@ -4,9 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
+    <script>
+        function fetchCurrentWeather() {
+            fetch("{{ url_for('location', loc='current') }}")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('weatherData').innerHTML = data;
+                });
+        }
+    </script>
 </head>
 <body>
     This is the weather app.
+
+    <!-- Button to get the forecast for the current location -->
+    <button onclick="fetchCurrentWeather()">Get forecast for my current location</button>
+
+    <div id="weatherData"></div>
 
     <form action="{{ url_for('search') }}" method="get">
         <input type="text" name="query" placeholder="Search a location...">
