@@ -23,7 +23,7 @@ def get_location():
 # forecast
 ################################
 def location(loc: str):
-    print("testing")
+    loc = request.args.get('inputValue')
     if loc == "current":
         latlng = get_location()
        
