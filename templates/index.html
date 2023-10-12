@@ -37,8 +37,6 @@
                                     </li>
                                 </ul>
                             </li>
-                         
-                            
                         </ul>
                         <hr>
                         <div class="dropdown pb-4">
@@ -61,6 +59,7 @@
                 <div class="col py-3">
                     <main>
                         <div id = "ForecastBlock" class="container" style="height: 100vh;">
+                            
                             <div id = "SearchBlock" class="container">
                                 <div id = SearchOptions class="d-flex flex-row align-items-center justify-content-center" style="height: 10vh;">
                                     <div class="form-group has-search col-xs-2">
@@ -71,10 +70,10 @@
                                     
                                     </div>
                                     <br>
-                                    <!-- Your dropdown menu -->
+                                    
                     <div class="dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="{{ url_for('static',filename ='Images/earth.png')}}" title="globe icons" width="20" height="20"> US | F
+                            <img src="{{ url_for('static',filename ='Images/earth.png')}}" title="globe icons" width="20" height="20"> US | F<!-- User Should be able to change this-->
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="#">Action</a>
@@ -89,10 +88,10 @@
                             <div class="ticker-container d-flex flex-row align-items-center justify-content-center rounded">
                                 <div class="ticker-wrapper">
                                 <!-- news info are appended here via javascript main.js-->
-                                <div class="ticker-transition">
+                                <div id = "News" class="ticker-transition">
                                 
                                 <!-- Enter News Here  --> <div class="ticker-item">Item 1.</div>
-                                <!-- Enter News Here  --> <div class="ticker-item">Item 2.asad</div>
+                                <!-- Enter News Here  --> <div class="ticker-item">Item 2.</div>
                                 <!-- Enter News Here  --> <div class="ticker-item">Item 3.</div>
                                 <!-- Enter News Here  --> <div class="ticker-item">Item 4.</div>
                                 <!-- Enter News Here  --> <div class="ticker-item">Item 5.</div>
@@ -101,21 +100,20 @@
                                 </div>
                             </div>
                             <div id="block" class="container">
+                                <!-- Location Name Should go here might need to center it via div class = align-items-center justify-content-center-->
                                 <!-- Forecast Cards are appended here via javascript main.js-->
                                 <div id = "Cards" class="row"> 
                                 </div>
                                 </div>
-                                  </div>
-                                </div>
-                            </div> 
-                </main>
+                    </div>
                 </div>
-            </div>
-        </div>
-                
-              
-            </div>
-        </div>
+        </div> 
+    </main>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
     </body>
     <footer>
     </footer>

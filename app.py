@@ -29,7 +29,7 @@ def location(loc: str):
        
         response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={latlng[0]},{latlng[1]}&days=14")
     else:
-       # get the input from text box html
+       # get the input from text box  in input.html
        input = request.args.get('inputValue')
        response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={input}&days=14")
 

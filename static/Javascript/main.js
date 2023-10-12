@@ -41,15 +41,17 @@ $("#Location").on('keyup', function (event) {
            const cardHtml = `
             <div class="col-md-2">
               <div id="CardBlock">
+              <button type="button" class="no-outline-button">
                 <div class="card">
                   <img class="card-img-top" src="${forecast.day.condition.icon}" alt="Card image">
                   <div class="card-img-overlay" style="text-align: center;">
                     <h4 class="card-title"><b>${dayName}</b></h4>
                     <p class="card-text"><h3>${forecast.day.condition.text}</h3></p>
                     <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
-                    ${forecast.day.avgtemp_f}°F
+                     Low ${forecast.day.mintemp_f } °F | Avg ${forecast.day.avgtemp_f}°F | High ${forecast.day.maxtemp_f}°F 
                   </div>
                 </div>
+                </button>
               </div>
             </div>
           `;
