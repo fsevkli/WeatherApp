@@ -27,7 +27,7 @@ def location(loc: str = "Paris"):
     response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key=5dea31b4204948a681b182600230709&q={loc}&days=14")
     data = json.loads(response.read())
 
-    # Saves data to json
+    # Saves data to json for debugging purposes
     with open(f'loc_json/loc_{loc}.json', 'w') as f:
         json.dump(data, f, indent=4)
 
@@ -42,7 +42,7 @@ def search():
     response = urlopen(f"https://api.weatherapi.com/v1/search.json?key={API_KEY}&q={query}")
     data = json.loads(response.read())
 
-    # Saves data to json
+    # Saves data to json for debugging purposes
     with open(f'loc_json/search_{query}.json', 'w') as f:
         json.dump(data, f, indent=4)
 
@@ -55,7 +55,6 @@ def search():
 @app.route('/')
 def index():
    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=3")
-   print(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}")
    data = json.loads(response.read())
 
    return render_template("index.html", data=data)
