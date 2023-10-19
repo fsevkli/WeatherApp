@@ -64,11 +64,10 @@
                             <div id = "SearchBlock" class="container">
                                 <div id = SearchOptions class="d-flex flex-row align-items-center justify-content-center" style="height: 10vh;">
                                     <div class="form-group has-search col-xs-2">
-                                        <span class="fa fa-search form-control-feedback"></span>
-                                    <input type="text" class="form-control  form-rounded  input-with-image" id="Location" name="Location" placeholder = "Enter Location:">
-                                    
-                                        
-                                    
+                                        <form action="{{ url_for('search') }}" method="get">
+                                            <span class="fa fa-search form-control-feedback"></span>
+                                            <input type="text" class="form-control  form-rounded  input-with-image" id="query" name="query" placeholder = "Search...">
+                                        </form>
                                     </div>
                                     <br>
                                     <!-- Your dropdown menu -->
@@ -102,10 +101,29 @@
                             </div>
                             <div id="block" class="container">
                                 <!-- Forecast Cards are appended here via javascript main.js-->
-                                <div id = "Cards" class="row"> 
+                                <div id="Cards" class="row">
+
+                                    {% for item in data['forecast']['forecastday'] %}
+
+                                        <div class="col-md-2">
+                                            <div id="CardBlock">
+                                            <div class="card">
+                                                <img class="card-img-top" src="{{ item['day']['condition']['icon'] }}" alt="Card image">
+                                                <div class="card-img-overlay" style="text-align: center;">
+                                                <h4 class="card-title"><b>{{ item['date'] }}</b></h4>
+                                                <p class="card-text"><h3>{{ item['day']['condition']['text'] }}</h3></p>
+                                                <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
+                                                {{ item['day']['avgtemp_f'] }}°F 
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+
                                 </div>
+                            </div>
                                 </div>
-                                  </div>
                                 </div>
                             </div> 
                 </main>

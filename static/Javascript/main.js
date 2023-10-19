@@ -1,7 +1,7 @@
 // Wait until html is done rendering 
 $(document).ready(function() {
     
-$("#Location").on('keyup', function (event) {
+$("#query").on('keyup', function (event) {
     if (event.keyCode === 13) {
         console.log("Enter key pressed!!!!!");
         var inputValue = $(this).val();
