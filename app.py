@@ -6,7 +6,10 @@ import geocoder
 
 app = Flask(__name__)
 
+
+
 API_KEY = '5dea31b4204948a681b182600230709'
+
 
 ################################
 # This function Get the 
@@ -23,7 +26,8 @@ def get_location():
 # forecast
 ################################
 def location(loc: str):
-    print("testing")
+    loc = request.args.get('inputValue')
+    loc = loc.split(" ")[0] 
     if loc == "current":
         latlng = get_location()
        
@@ -31,41 +35,68 @@ def location(loc: str):
     else:
        # get the input from text box html
        input = request.args.get('inputValue')
+       input = input.split(" ")[0] 
+       print(input)
        response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={input}&days=14")
-
-    data = json.loads(response.read())
+       
+    global forecastData
+    # Convert the response to JSON and store it in forecastData
+    forecastData = json.loads(response.read())
     
-    #Convert data to json to use in main.js
-    return jsonify(data=data, 
-                           location=data['location'], current=data['current'], condition=data['current']['condition'],
-                           forecast=data['forecast']['forecastday'])
-
+    # Convert data to JSON to use in main.js
+    return jsonify(data=forecastData, 
+                   location=forecastData['location'], current=forecastData['current'], condition=forecastData['current']['condition'],
+                   forecast=forecastData['forecast']['forecastday'])
 def search():
     # Do this because the API has issues with spaces between words
     query = request.args.get('inputValue')
     query = query.split(" ")[0]  # Do this because API has issues with spaces between words
     response = urlopen(f"https://api.weatherapi.com/v1/search.json?key={API_KEY}&q={query}")
+   
     data = json.loads(response.read())
-
+    
     # Save data to JSON file (optional)
    
     return data
-
+######################
+# This function Get the card date from 
+# Main.js and returns the hourly data
+# for that date
+#######################
+@app.route('/getDate', methods=['POST'])
+def getDate():
+    cardDate = request.json 
+    print(cardDate)
+    hourlyData = None
+   # print(forecastData)
+    for forecast_day in forecastData['forecast']['forecastday']:
+       
+        if forecast_day['date'] == cardDate:
+         #You can access the data for the specific day here
+             print("test")
+             hourlyData = forecast_day['hour']
+             break
+            
+    result = {'message': 'Data received successfully'}
+    return  jsonify(hourlyData)
 ################################
 # This functions renders the 
 # index webpage 
 ################################
 @app.route('/')
 def index():
-
+   response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=3")
+   global forecastData
+   forecastData  = json.loads(response.read())
+  # print(data)
    if request.is_json:
-        json_data = search()
+        # json_data = search()
         json_data = location(str)
         
-        print(json_data)
+       # print(json_data)
        
         return json_data
-   return render_template("index.html")
+   return render_template("index.html", data=forecastData)
 
 ################################
 # This Function Runs the server 

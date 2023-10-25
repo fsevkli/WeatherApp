@@ -1,122 +1,128 @@
 <!DOCTYPE html>
 <html lang="eng">
-    <head>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <link rel="stylesheet" href="{{ url_for('static',filename ='css/style.css')}}">
-        <title>Weather Hub</title>
-        <meta charset="utf-8">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="{{ url_for('static',filename ='Javascript/main.js')}}"></script>
-    </head>
-    <body>
-        <script src="https://code.jquery.com/jquery-3.6.1.min.js"
-        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
-        crossorigin="anonymous"></script>
-   
-  <!-- Sidebar -->
-        <div class="container-fluid">
-            <div class="row flex-nowrap">
-                <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-                    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                        <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                            <span class="fs-5 d-none d-sm-inline">Menu</span>
+   <head>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+      <link rel="stylesheet" href="{{ url_for('static',filename ='css/style.css')}}">
+      <title>Weather Hub</title>
+      <meta charset="utf-8">
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script src="{{ url_for('static',filename ='Javascript/main.js')}}"></script>
+   </head>
+   <body>
+      <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+         integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+         crossorigin="anonymous"></script>
+      <!-- Sidebar -->
+      <div class="container-fluid">
+         <div class="row flex-nowrap">
+            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+               <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                  <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                  <span class="fs-5 d-none d-sm-inline">Menu</span>
+                  </a>
+                  <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                     <li class="nav-item">
+                        <a href="#" class="nav-link align-middle px-0">
+                        <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
                         </a>
-                        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                            <li class="nav-item">
-                                <a href="#" class="nav-link align-middle px-0">
-                                    <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                                    <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Forecast</span> </a>
-                                <ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                                    <li class="w-100">
-                                        <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">News</span>  </a>
-                                    </li>
-                                </ul>
-                            </li>
-                         
-                            
+                     </li>
+                     <li>
+                        <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                        <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Forecast</span> </a>
+                        <ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                           <li class="w-100">
+                              <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">News</span>  </a>
+                           </li>
                         </ul>
-                        <hr>
-                        <div class="dropdown pb-4">
-                            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="{{ url_for('static',filename ='Images/settings.png')}}" alt="settings" width="30" height="30" class="rounded-circle">
-                                <span class="d-none d-sm-inline mx-1">Settings</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                                <li><a class="dropdown-item" href="#">Dark Mode</a></li>
-                                <li><a class="dropdown-item" href="#">Light Mode</a></li>
-                                <li><a class="dropdown-item" href="#">Pause Animations</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                               
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col py-3">
-                    <main>
-                        <div id = "ForecastBlock" class="container" style="height: 100vh;">
-                            <div id = "SearchBlock" class="container">
-                                <div id = SearchOptions class="d-flex flex-row align-items-center justify-content-center" style="height: 10vh;">
-                                    <div class="form-group has-search col-xs-2">
-                                        <span class="fa fa-search form-control-feedback"></span>
-                                    <input type="text" class="form-control  form-rounded  input-with-image" id="Location" name="Location" placeholder = "Enter Location:">
-                                    
-                                        
-                                    
-                                    </div>
-                                    <br>
-                                    <!-- Your dropdown menu -->
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="{{ url_for('static',filename ='Images/earth.png')}}" title="globe icons" width="20" height="20"> US | F
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </div>
-                                      
-                            </div>
-                            
-                            <div class="ticker-container d-flex flex-row align-items-center justify-content-center rounded">
-                                <div class="ticker-wrapper">
-                                <!-- Jews info are appended here via javascript main.js-->
-                                <div class="ticker-transition">
-                                
-                                <!-- Enter News Here  --> <div class="ticker-item">Item 1.</div>
-                                <!-- Enter News Here  --> <div class="ticker-item">Item 2.asad</div>
-                                <!-- Enter News Here  --> <div class="ticker-item">Item 3.</div>
-                                <!-- Enter News Here  --> <div class="ticker-item">Item 4.</div>
-                                <!-- Enter News Here  --> <div class="ticker-item">Item 5.</div>
-                                </div>
-                                </div>
-                                </div>
-                            </div>
-                            <div id="block" class="container">
-                                <!-- Forecast Cards are appended here via javascript main.js-->
-                                <div id = "Cards" class="row"> 
-                                </div>
-                                </div>
-                                  </div>
-                                </div>
-                            </div> 
-                </main>
-                </div>
+                     </li>
+                  </ul>
+                  <hr>
+                  <div class="dropdown pb-4">
+                     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                     <img src="{{ url_for('static',filename ='Images/settings.png')}}" alt="settings" width="30" height="30" class="rounded-circle">
+                     <span class="d-none d-sm-inline mx-1">Settings</span>
+                     </a>
+                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                        <li><a class="dropdown-item" href="#">Dark Mode</a></li>
+                        <li><a class="dropdown-item" href="#">Light Mode</a></li>
+                        <li><a class="dropdown-item" href="#">Pause Animations</a></li>
+                        <li>
+                           <hr class="dropdown-divider">
+                        </li>
+                     </ul>
+                  </div>
+               </div>
             </div>
-        </div>
-                
-              
+            <div class="col py-3">
+               <main>
+                  <div id = "ForecastBlock" class="container" style="height: 100vh;">
+                     <div id = "SearchBlock" class="container">
+                        <div id = "SearchOptions" class="d-flex flex-row align-items-center justify-content-center" style="height: 10vh;">
+                           <div class="form-group has-search col-xs-2">
+                              <span class="fa fa-search form-control-feedback"></span>
+                              <input type="text" class="form-control  form-rounded  input-with-image" id="Location" name="Location" placeholder = "Enter Location:">
+                           </div>
+                           <br>
+                           <!-- dropdown menu -->
+                           <div class="dropdown">
+                              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <img src="{{ url_for('static',filename ='Images/earth.png')}}" title="globe icons" width="20" height="20"> US | F
+                              </a>
+                              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                 <a class="dropdown-item" href="#">Action</a>
+                                 <a class="dropdown-item" href="#">Another action</a>
+                                 <div class="dropdown-divider"></div>
+                                 <a class="dropdown-item" href="#">Something else here</a>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="ticker-container d-flex flex-row align-items-center justify-content-center rounded">
+                           <div class="ticker-wrapper">
+                              <!-- news info are appended here via javascript main.js-->
+                              <div class="ticker-transition">
+                                 <!-- Enter News Here  --> 
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div id="block" class="container">
+                        <div id ="Location">
+                           <!--Add Location Here -->
+                        </div>
+                        <div id = "Cards" class="row">
+                           <!-- Forecast Cards are appended here via javascript main.js-->
+                           {% for item in data['forecast']['forecastday'] %}
+
+                           <div class="col-md-2">
+                               <div id="CardBlock">
+                                   <button type="button" class="no-outline-button" value="{{ item['date'] }}" onclick="ShowHourly(value)">
+                               <div class="card">
+                                   <img class="card-img-top" src="{{ item['day']['condition']['icon'] }}" alt="Card image">
+                                   <div class="card-img-overlay" style="text-align: center;">
+                                   <h4 class="card-title"><b>{{ item['date'] }}</b></h4>
+                                   <p class="card-text"><h3>{{ item['day']['condition']['text'] }}</h3></p>
+                                   <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
+                                   {{ item['day']['avgtemp_f'] }}°F 
+                                   </div>
+                               </div>
+                               </button> 
+                               </div>
+                           </div>
+
+                       {% endfor %}
+                        </div>
+                     </div>
+                  </div>
             </div>
-        </div>
-    </body>
-    <footer>
-    </footer>
+         </div>
+         </main>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+   </body>
+   <footer>
+   </footer>
 </html>
