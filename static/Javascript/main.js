@@ -62,6 +62,7 @@ $("#Location").on('keyup', function (event) {
                     Low ${forecast.day.mintemp_f}°F |  ${forecast.day.avgtemp_f}°F | High ${forecast.day.maxtemp_f}°F 
                   </div>
                 </div>
+                </button>
               </div>
             </div>
           `;// Need to change Mesurement if the user has chosen another one

@@ -48,9 +48,8 @@ def location(loc: str):
                    location=forecastData['location'], current=forecastData['current'], condition=forecastData['current']['condition'],
                    forecast=forecastData['forecast']['forecastday'])
 def search():
-    # Do this because the API has issues with spaces between words
-    query = request.args.get('inputValue')
-    query = query.split(" ")[0]  # Do this because API has issues with spaces between words
+    query = request.args.get('query', 'Paris')
+    query = query.replace(" ", "%20")
     response = urlopen(f"https://api.weatherapi.com/v1/search.json?key={API_KEY}&q={query}")
    
     data = json.loads(response.read())
