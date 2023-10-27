@@ -5,9 +5,13 @@
       <link rel="stylesheet" href="{{ url_for('static',filename ='css/style.css')}}">
       <title>Weather Hub</title>
       <meta charset="utf-8">
+    
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <script src="{{ url_for('static',filename ='Javascript/main.js')}}"></script>
+      <link href='//fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+ 
+    
    </head>
    <body>
       <script src="https://code.jquery.com/jquery-3.6.1.min.js"
@@ -56,6 +60,7 @@
             </div>
             <div class="col py-3">
                <main>
+                  
                   <div id = "ForecastBlock" class="container" style="height: 100vh;">
                      <div id = "SearchBlock" class="container">
                         <div id = "SearchOptions" class="d-flex flex-row align-items-center justify-content-center" style="height: 10vh;">
@@ -78,6 +83,8 @@
                            </div>
                         </div>
                         <div class="ticker-container d-flex flex-row align-items-center justify-content-center rounded">
+  
+  
                            <div class="ticker-wrapper">
                               <!-- news info are appended here via javascript main.js-->
                               <div class="ticker-transition">
@@ -86,11 +93,15 @@
                            </div>
                         </div>
                      </div>
+                     <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
                      <div id="block" class="container">
-                        <div id ="Location">
+                        <div id ="location">
                            <!--Add Location Here -->
+                           Location
                         </div>
+                        
                         <div id = "Cards" class="row">
+                           <div id="myChart"></div>
                            <!-- Forecast Cards are appended here via javascript main.js-->
                            {% for item in data['forecast']['forecastday'] %}
 

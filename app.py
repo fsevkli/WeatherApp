@@ -35,7 +35,7 @@ def location(loc: str):
     else:
        # get the input from text box html
        input = request.args.get('inputValue')
-       input = input.split(" ")[0] 
+       input = input.replace(" ", "%20")
        print(input)
        response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={input}&days=14")
        
@@ -67,16 +67,15 @@ def getDate():
     cardDate = request.json 
     print(cardDate)
     hourlyData = None
-   # print(forecastData)
+    print(forecastData)
     for forecast_day in forecastData['forecast']['forecastday']:
        
         if forecast_day['date'] == cardDate:
          #You can access the data for the specific day here
-             print("test")
              hourlyData = forecast_day['hour']
              break
             
-    result = {'message': 'Data received successfully'}
+   
     return  jsonify(hourlyData)
 ################################
 # This functions renders the 
