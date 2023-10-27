@@ -5,7 +5,7 @@ function getLocation(forecastWeek) {
   const locationHolder = $('#location')
         locationHolder.empty(); // Clear existing
         console.log("Current Location : "+forecastWeek.location.name+" "+forecastWeek.location.region+" "+forecastWeek.location.country)
-        const locationHtml = `<p><h2>Current Location : ${forecastWeek.location.name} ${forecastWeek.location.region} ${forecastWeek.location.country}  </h2></p>
+        const locationHtml = `<p><h2> ${forecastWeek.location.name}, ${forecastWeek.location.region}  -- ${forecastWeek.location.country}  </h2></p>
         `;
         locationHolder.append(locationHtml)
 }

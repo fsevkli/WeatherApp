@@ -86,15 +86,15 @@ def index():
    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=3")
    global forecastData
    forecastData  = json.loads(response.read())
-  # print(data)
+   print( forecastData)
    if request.is_json:
         # json_data = search()
         json_data = location(str)
         
-       # print(json_data)
+        print(json_data)
        
         return json_data
-   return render_template("index.html", data=forecastData)
+   return render_template("index.html", data=forecastData,   location=forecastData['location'])
 
 ################################
 # This Function Runs the server 
