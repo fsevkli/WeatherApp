@@ -130,10 +130,15 @@ h1{
 @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:200');
 
 body {
-    background-image: url('rain-4431.gif');
-    background-size: cover;
-    animation: slidein 100s infinite alternate;
-    /* Other properties remain the same */
+  .sunny-bg {
+    background-image: url('https://media.tenor.com/I8LmxHsARk0AAAAC/sunny-bluesky.gif');
+  }
+  .sunset-sunrise-bg {
+    background-image: url('https://media.tenor.com/E7y6uqqLouAAAAAd/sky-clouds.gif');
+ }
+ .moon-bg {
+    background-image: url('https://media.tenor.com/Omn7eReV-W8AAAAC/moon-cloud.gif');
+  }
 }
 
 @keyframes slidein {

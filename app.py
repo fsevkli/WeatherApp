@@ -113,6 +113,9 @@ def default():
 # index webpage 
 ################################
 @app.route('/')
+@app.route('/')
+@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=3")
    global forecastData
