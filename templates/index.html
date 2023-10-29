@@ -1,140 +1,129 @@
 <!DOCTYPE html>
 <html lang="eng">
-   <head>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-      <link rel="stylesheet" href="{{ url_for('static',filename ='css/style.css')}}">
-      <title>Weather Hub</title>
-      <meta charset="utf-8">
-    
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <script src="{{ url_for('static',filename ='Javascript/main.js')}}"></script>
-      <link href='//fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
- 
-    
-   </head>
-   <body>
-      <script src="https://code.jquery.com/jquery-3.6.1.min.js"
-         integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
-         crossorigin="anonymous"></script>
-      <!-- Sidebar -->
-      <div class="container-fluid">
-         <div class="row flex-nowrap">
-            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-               <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                  <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                  <span class="fs-5 d-none d-sm-inline">Menu</span>
-                  </a>
-                  <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                     <li class="nav-item">
-                        <a href="#" class="nav-link align-middle px-0">
-                        <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
-                        </a>
-                     </li>
-                     <li>
-                        <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                        <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Forecast</span> </a>
-                        <ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                           <li class="w-100">
-                              <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">News</span>  </a>
-                           </li>
-                        </ul>
-                     </li>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS Links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static',filename ='css/style.css')}}">
+    <link href='//fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+
+    <!-- Title -->
+    <title>Weather Hub</title>
+</head>
+
+<body data-sunrise="{{ sunrise }}" data-sunset="{{ sunset }}">
+   
+    <span id="suntime" style="display: none;">{{ suntime }}</span>
+    <span id="sunrise" style="display: none;">{{ sunrise }}</span>
+    <span id="sunset" style="display: none;">{{ sunset }}</span>
+    <span id="localtime" style="display: none;">{{ localtime }}</span>
+
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <div class="col py-3">
+            <main>
+                <div id="ForecastBlock" class="container" style="height: 100vh;">
+                  <div id="SearchOptions" class="d-flex flex-row align-items-center justify-content-center" style="height: 10vh;">
+
+                      <!-- Wrap search input and dropdown in a form -->
+                        <form method="POST" action="{{ url_for('index') }}" class="d-flex flex-row align-items-center justify-content-center">
+                     <!-- Search Input -->
+                     <div class="form-group has-search col-xs-2">
+                         <span class="fa fa-search form-control-feedback"></span>
+                         <input type="text" class="form-control form-rounded input-with-image" id="Location" name="Location" placeholder="Enter Location:">
+                     </div>
+             
+                     <!-- Region Selector Dropdown -->
+                     <div class="dropdown">
+                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                             <img src="{{ url_for('static',filename ='Images/earth.png')}}" title="globe icons" width="20" height="20"> US | F
+                         </a>
+                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                             <a class="dropdown-item" href="#">Action</a>
+                             <a class="dropdown-item" href="#">Another action</a>
+                             <div class="dropdown-divider"></div>
+                             <a class="dropdown-item" href="#">Something else here</a>
+                         </div>
+                     </div>
+                 </div>
+             
+                 <!-- Forecast Details -->
+                 <div id="block" class="container">
+                     <div id="location">
+                         <h2> {{ location['name'] }}, {{ location['region'] }} -- {{ location['country'] }}</h2>
+                     </div>
+                     
+                     <div id="Cards" class="row">
+                         <div id="myChart"></div>
+                         <!-- Forecast Cards -->
+                         {% for item in data['forecast']['forecastday'] %}
+                             <div class="col-md-2">
+                                 <div id="CardBlock">
+                                     <button type="button" class="no-outline-button" value="{{ item['date'] }}" onclick="ShowHourly(value)">
+                                         <div class="card">
+                                             <img class="card-img-top" src="{{ item['day']['condition']['icon'] }}" alt="Card image">
+                                             <div class="card-img-overlay" style="text-align: center;">
+                                                 <h4 class="card-title"><b>{{ item['date'] }}</b></h4>
+                                                 <p class="card-text">
+                                                     <h3>{{ item['day']['condition']['text'] }}</h3>
+                                                 </p>
+                                                 <img src="{{ url_for('static',filename ='Images/thermometer.png')}}" alt="Card image" width="20" height="20">
+                                                 {{ item['day']['avgtemp_f'] }}°F 
+                                             </div>
+                                         </div>
+                                     </button>
+                                 </div>
+                             </div>
+                         {% endfor %}
+                     </div>
+                 </div>
+             </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+      <div class="container">
+          <div class="row">
+              <div class="col-md-4">
+                  <!-- Footer Logo and Brand Info -->
+                  <h5>Weather Hub</h5>
+                  <p>Providing you with the most accurate weather updates and forecasts.</p>
+              </div>
+              <div class="col-md-4">
+                  <!-- Quick Links -->
+                  <h5>Quick Links</h5>
+                  <ul class="list-unstyled">
+                      <li><a href="#" class="text-white">Home</a></li>
+                      <li><a href="#" class="text-white">Forecast</a></li>
+                      <li><a href="#" class="text-white">About</a></li>
+                      <li><a href="#" class="text-white">Contact</a></li>
                   </ul>
-                  <hr>
-                  <div class="dropdown pb-4">
-                     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                     <img src="{{ url_for('static',filename ='Images/settings.png')}}" alt="settings" width="30" height="30" class="rounded-circle">
-                     <span class="d-none d-sm-inline mx-1">Settings</span>
-                     </a>
-                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                        <li><a class="dropdown-item" href="#">Dark Mode</a></li>
-                        <li><a class="dropdown-item" href="#">Light Mode</a></li>
-                        <li><a class="dropdown-item" href="#">Pause Animations</a></li>
-                        <li>
-                           <hr class="dropdown-divider">
-                        </li>
-                     </ul>
-                  </div>
-               </div>
-            </div>
-            <div class="col py-3">
-               <main>
-                  
-                  <div id = "ForecastBlock" class="container" style="height: 100vh;">
-                     <div id = "SearchBlock" class="container">
-                        <div id = "SearchOptions" class="d-flex flex-row align-items-center justify-content-center" style="height: 10vh;">
-                           <div class="form-group has-search col-xs-2">
-                              <span class="fa fa-search form-control-feedback"></span>
-                              <input type="text" class="form-control  form-rounded  input-with-image" id="Location" name="Location" placeholder = "Enter Location:">
-                           </div>
-                           <br>
-                           <!-- dropdown menu -->
-                           <div class="dropdown">
-                              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <img src="{{ url_for('static',filename ='Images/earth.png')}}" title="globe icons" width="20" height="20"> US | F
-                              </a>
-                              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                 <a class="dropdown-item" href="#">Action</a>
-                                 <a class="dropdown-item" href="#">Another action</a>
-                                 <div class="dropdown-divider"></div>
-                                 <a class="dropdown-item" href="#">Something else here</a>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="ticker-container d-flex flex-row align-items-center justify-content-center rounded">
-  
-  
-                           <div class="ticker-wrapper">
-                              <!-- news info are appended here via javascript main.js-->
-                              <div class="ticker-transition">
-                                 <!-- Enter News Here  --> 
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
-                     <div id="block" class="container">
-                        <div id ="location">
-                           <!--Add Location Here -->
-                           <h2> {{ location['name'] }}, {{ location['region'] }} -- {{ location['country'] }}</h2>
-                           Location
-                        </div>
-                        
-                        <div id = "Cards" class="row">
-                           <div id="myChart"></div>
-                           <!-- Forecast Cards are appended here via javascript main.js-->
-                           {% for item in data['forecast']['forecastday'] %}
+              </div>
+              <div class="col-md-4">
+                  <!-- Contact Info -->
+                  <h5>Contact Us</h5>
+                  <address>
+                      123 Weather Street<br>
+                      City, State 12345<br>
+                      <a href="tel:+1234567890" class="text-white">+1 234-567-890</a><br>
+                      <a href="mailto:info@weatherhub.com" class="text-white">info@weatherhub.com</a>
+                  </address>
+              </div>
+          </div>
+          <!-- Copyright -->
+          <div class="row mt-3">
+              <div class="col text-center">
+                  &copy; 2023 Weather Hub. All Rights Reserved.
+              </div>
+          </div>
+      </div>
+  </footer>
 
-                           <div class="col-md-2">
-                               <div id="CardBlock">
-                                   <button type="button" class="no-outline-button" value="{{ item['date'] }}" onclick="ShowHourly(value)">
-                               <div class="card">
-                                   <img class="card-img-top" src="{{ item['day']['condition']['icon'] }}" alt="Card image">
-                                   <div class="card-img-overlay" style="text-align: center;">
-                                   <h4 class="card-title"><b>{{ item['date'] }}</b></h4>
-                                   <p class="card-text"><h3>{{ item['day']['condition']['text'] }}</h3></p>
-                                   <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
-                                   {{ item['day']['avgtemp_f'] }}°F 
-                                   </div>
-                               </div>
-                               </button> 
-                               </div>
-                           </div>
-
-                       {% endfor %}
-                        </div>
-                     </div>
-                  </div>
-            </div>
-         </div>
-         </main>
-      </div>
-      </div>
-      </div>
-      </div>
-      </div>
-   </body>
-   <footer>
-   </footer>
+    <!-- JS Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static',filename ='Javascript/main.js')}}"></script>
+</body>
 </html>

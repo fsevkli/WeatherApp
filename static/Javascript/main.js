@@ -388,4 +388,56 @@ function Return(){
   cardsContainer.append(previouscard);
   previouscard = null;
 }
+$(document).ready(function() {
+  // Listen for the "Enter" key in the location input
+  $("#Location").on('keyup', function(e) {
+      if (e.keyCode === 13) {  // 13 is the key code for "Enter"
+          let location = $(this).val();
+          
+          // Make an AJAX POST request to the server to get weather data for the new location
+          $.ajax({
+              type: "POST",
+              url: "/updateLocation",
+              data: {
+                  'Location': location
+              },
+              success: function(response) {
+                  // Here, you can handle the server's response, maybe update your page content based on the new data.
+                  // For simplicity, we're just refreshing the page.
+                  location.reload();
+              }
+          });
+      }
+  });
+  // ... Rest of your code ...
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  function setBackground() {
+      const localtime = new Date(document.querySelector('#localtime').textContent);
+
+      // Assuming the sunrise and sunset times in your HTML are in the format "HH:MM AM/PM"
+      const sunriseParts = document.querySelector('#sunrise').textContent.split(/[:\s]/);
+      const sunsetParts = document.querySelector('#sunset').textContent.split(/[:\s]/);
+
+      const sunriseHour = sunriseParts[2] === 'PM' ? parseInt(sunriseParts[0]) + 12 : parseInt(sunriseParts[0]);
+      const sunriseMinute = parseInt(sunriseParts[1]);
+
+      const sunsetHour = sunsetParts[2] === 'PM' ? parseInt(sunsetParts[0]) + 12 : parseInt(sunsetParts[0]);
+      const sunsetMinute = parseInt(sunsetParts[1]);
+
+      const sunrise = new Date(localtime.getFullYear(), localtime.getMonth(), localtime.getDate(), sunriseHour, sunriseMinute);
+      const sunset = new Date(localtime.getFullYear(), localtime.getMonth(), localtime.getDate(), sunsetHour, sunsetMinute);
+
+      if (localtime >= sunrise && localtime < sunset) {
+          // If the current time is between sunrise and sunset
+          document.body.className = 'sunny-bg';
+      } else {
+          // If the current time is before sunrise or after sunset
+          document.body.className = 'moon-bg';
+      }
+  }
+
+  setBackground();
+});
 

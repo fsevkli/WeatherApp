@@ -3,6 +3,9 @@ from flask import Flask, render_template, request, jsonify
 from urllib.request import urlopen
 import json
 import geocoder
+from datetime import datetime
+
+
 
 app = Flask(__name__)
 
@@ -82,19 +85,42 @@ def getDate():
 # index webpage 
 ################################
 @app.route('/')
+@app.route('/')
+@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-   response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=3")
-   global forecastData
-   forecastData  = json.loads(response.read())
-   print( forecastData)
-   if request.is_json:
-        # json_data = search()
+    if request.method == 'POST':
+        location_query = request.form.get('Location')
+    else:
+        # Default to user's location if it's a GET request
+        location_query = f"{get_location()[0]},{get_location()[1]}"
+    
+    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={location_query}&days=3")
+    forecastData = json.loads(response.read())
+
+    sunrise_time_str = forecastData['forecast']['forecastday'][0]['astro']['sunrise']
+    sunset_time_str = forecastData['forecast']['forecastday'][0]['astro']['sunset']
+    local_time_str = forecastData['location']['localtime']
+    
+    # Convert sunrise and sunset time strings to datetime objects
+    sunrise_time = datetime.strptime(sunrise_time_str, '%I:%M %p').time()
+    sunset_time = datetime.strptime(sunset_time_str, '%I:%M %p').time()
+
+    # Get current local time in HH:MM format
+    current_time = datetime.now().time().replace(second=0, microsecond=0)
+    
+    # Check if current time is between sunrise and sunset
+    if sunrise_time <= current_time <= sunset_time:
+        suntime = "day"
+    else:
+        suntime = "night"
+
+    if request.is_json:
         json_data = location(str)
-        
-        print(json_data)
-       
-        return json_data
-   return render_template("index.html", data=forecastData,   location=forecastData['location'])
+        return json_data  # if the request is JSON, it will return here
+    
+    # if the request is not JSON, it will continue and render the template
+    return render_template("index.html", data=forecastData, location=forecastData['location'], sunrise=sunrise_time_str, sunset=sunset_time_str, suntime=suntime, localtime=local_time_str)
 
 ################################
 # This Function Runs the server 
