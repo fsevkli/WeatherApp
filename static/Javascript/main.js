@@ -1,26 +1,169 @@
-// Wait until html is done rendering 
-var inputValue
-var previouscard
+
+// Get the current input value from the Location input field.
+var inputValue;
+
+//  Store the previous card data for later retrieval.
+var previouscard;
+
+// Store hourly temperature data.
+let hourlytemp = [];
+
+// Store timestamp data.
+let timestamp = [];
+
+/**
+ * Get location information and update the UI.
+ * @param {Object} forecastWeek - The forecast data for the week.
+ */
 function getLocation(forecastWeek) {
   const locationHolder = $('#location')
         locationHolder.empty(); // Clear existing
-        console.log("Current Location : "+forecastWeek.location.name+" "+forecastWeek.location.region+" "+forecastWeek.location.country)
         const locationHtml = `<p><h2> ${forecastWeek.location.name}, ${forecastWeek.location.region}  -- ${forecastWeek.location.country}  </h2></p>
         `;
         locationHolder.append(locationHtml)
 }
+/**
+ * Store the previous card data before switching to hourly data.
+ */
 function previousCard(){
   previouscard = $('#Cards').html();
-  console.log(previouscard)
 }
-console.log(previouscard)
+/**
+ * Set the background based on the time of day.
+ */
+function setBackground() {
+  const localtime = new Date(document.querySelector('#localtime').textContent);
+
+  // Assuming the sunrise and sunset times in your HTML are in the format "HH:MM AM/PM"
+  const sunriseParts = document.querySelector('#sunrise').textContent.split(/[:\s]/);
+  const sunsetParts = document.querySelector('#sunset').textContent.split(/[:\s]/);
+
+  const sunriseHour = sunriseParts[2] === 'PM' ? parseInt(sunriseParts[0]) + 12 : parseInt(sunriseParts[0]);
+  const sunriseMinute = parseInt(sunriseParts[1]);
+
+  const sunsetHour = sunsetParts[2] === 'PM' ? parseInt(sunsetParts[0]) + 12 : parseInt(sunsetParts[0]);
+  const sunsetMinute = parseInt(sunsetParts[1]);
+
+  const sunrise = new Date(localtime.getFullYear(), localtime.getMonth(), localtime.getDate(), sunriseHour, sunriseMinute);
+  const sunset = new Date(localtime.getFullYear(), localtime.getMonth(), localtime.getDate(), sunsetHour, sunsetMinute);
+
+  if (localtime >= sunrise && localtime < sunset) {
+      // If the current time is between sunrise and sunset
+      document.body.className = 'sunny-bg';
+  } else {
+      // If the current time is before sunrise or after sunset
+      document.body.className = 'moon-bg';
+  }
+}
+
+/**
+ * Get sunrise, sunset, and local time data from the server.
+ */
+function GetTimeData(){
+  $.ajax({
+    url:'/Background',
+    type:'get',
+    contentType:'application/json',
+  
+    success: function (response) {
+      console.log("dATA"+response.suntime+" "+response.sunset+" "+response.sunrise+" "+" "+response.localtime)
+      $("body").data('sunrise', response.sunrise);
+      $("body").data('sunset', response.sunset);
+
+      $("#suntime").empty();
+      $("#sunrise").empty();
+      $("#sunset").empty();
+      $("#localtime").empty();
+
+      $("#suntime").append(response.suntime);
+      $("#sunrise").append(response.sunrise);
+      $("#sunset").append(response.sunset);
+      $("#localtime").append(response.localtime);
+},
+error: function(error) {
+console.error('Error:', error);
+}    
+})
+}
+
+/*
+* Get the default weather Card
+*/
+function defaultCard(){
+  console.log('default card')
+  $.ajax({
+    url:'/default',
+    type:'get',
+    contentType:'application/json',
+    
+    success: function (response) {
+        console.log(response)
+        
+const cardsContainer = $('#Cards');
+cardsContainer.empty(); // Clear existing card data
+const forecastWeek  = response
+getLocation(forecastWeek)
+// Loop through the forecast data and create cards
+for (const forecast of forecastWeek.forecast) {
+//date string in "YYYY-MM-DD" format
+var dateString = forecast.date;
+
+// Parse the date string into a Date object
+var date = new Date(dateString);
+
+// Array of day names
+var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+// Get the day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+var dayOfWeek = date.getDay();
+
+// Get the name of the day
+var dayName = dayNames[dayOfWeek];
+//console.log(forecast)
+// Append a new card to div Cards 
+   const cardHtml = `
+    <div class="col-md-2">
+      <div id="CardBlock">
+        <button class = "no-outline-button" value= ${dateString} Onclick = "ShowHourly(value)">
+        <div class="card">
+          <img class="card-img-top" src="${forecast.day.condition.icon}" alt="Card image">
+          <div class="card-img-overlay" style="text-align: center;">
+            <h4 class="card-title"><b>${dayName}</b></h4>
+            <p class="card-text"><h3>${forecast.day.condition.text}</h3></p>
+            <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
+            Low ${forecast.day.mintemp_f}°F |  ${forecast.day.avgtemp_f}°F | High ${forecast.day.maxtemp_f}°F 
+          </div>
+        </div>
+        </button>
+      </div>
+    </div>
+  `;// Need to change Mesurement if the user has chosen another one
+ 
+  cardsContainer.append(cardHtml);
+}
+GetTimeData();
+setBackground();
+},
+error: function(error) {
+console.error('Error:', error);
+}    
+})
+}
+
+/**
+ * Initialize the page with data and event handlers.
+ */
 $(document).ready(function() {
+  
   previousCard()
-  console.log(previouscard)
+ let KeyPress = false
 $("#Location").on('keyup', function (event) {
     if (event.keyCode === 13) {
+      KeyPress = true;
+      document.body.className = '';
         console.log("Enter key pressed!!!!!");
         inputValue = $(this).val();
+        
         console.log(inputValue);
         $.ajax({
             url:'',
@@ -31,8 +174,7 @@ $("#Location").on('keyup', function (event) {
             }, 
             success: function (response) {
                 console.log(response)
-                previouscard = $('#Cards').html();
-                console.log(previouscard)
+                
         const cardsContainer = $('#Cards');
         cardsContainer.empty(); // Clear existing card data
         const forecastWeek  = response
@@ -75,19 +217,26 @@ $("#Location").on('keyup', function (event) {
          
           cardsContainer.append(cardHtml);
         }
+        GetTimeData();
+        setBackground();
       },
       error: function(error) {
         console.error('Error:', error);
       }    
         })
-     }
+     }  
  })
-
+ if(!KeyPress){
+  console.log("Not Press")
+  GetTimeData()
+  setBackground()
+  defaultCard()
+ }
 })
 /**
- * Convert time from 24:00 to 12:00 format
- * @param {*} DateTime 
- * @returns 
+ * Convert time from 24:00 to 12:00 format.
+ * @param {String} DateTime - Time in 24-hour format.
+ * @returns {String} - Time in 12-hour format.
  */
 function GetTime(DateTime) {
 const parsedDate = new Date(DateTime);
@@ -102,8 +251,7 @@ const formattedTime = `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')
 return formattedTime
 }
 
-let hourlytemp = [];
-let timestamp=[];
+
 /**
  * Renders a chart using ZingChart
  * with the hourly date from hourlytemp
@@ -314,7 +462,8 @@ function createChart(){
   
 
 /**
- * Shows the hourly data
+ * Show hourly data for a specific day.
+ * @param {String} day - The selected day for hourly data.
  */
 function ShowHourly(day){
   console.log(day)
@@ -330,20 +479,16 @@ function ShowHourly(day){
       var hourly_Data = response;
       const cardsContainer = $('#Cards');
       cardsContainer.empty(); // Clear existing card data
-      backButton= `<button Onclick = "Return()"> Back </button>
-      
-     
- 
+      backButton= `<button class="button-19" role="button" Onclick = "Return()"> Back </button><!-- HTML !-->
      `;
       cardsContainer.append(backButton)
     
       const scrollHtml = `
       <div class="container horizontal-scrollable"> 
       <div id = "scroll" class="row text-center"style="height: 40vh;"> 
-         
       </div> 
-  </div>
-  <div id="chart" style="height: 40vh;"></div> 
+      </div>
+      <div id="chart" style="height: 40vh;"></div> 
       `;
       cardsContainer.append(scrollHtml);
       for ( i = 0; i < hourly_Data.length; i++) {
@@ -358,7 +503,7 @@ function ShowHourly(day){
         <h4>${formattedDateTime}</h4>
         <img src="${hourly_Data[i].condition.icon}" alt="Card image">
         <h5>${hourly_Data[i].condition.text}</h5>
-        <br> ${hourly_Data[i].temp_f} F Feels Like ${hourly_Data[i].feelslike_f}F</br>
+        <br> ${hourly_Data[i].temp_f} °F  Feels Like ${hourly_Data[i].feelslike_f} °F </br>
         </div>
         </div><br>
       `;// Need to change Mesurement if the user has chosen another one
@@ -366,8 +511,6 @@ function ShowHourly(day){
       $('#scroll').append(cardHtml)
        // console.log("DATA : "+ hourly_Data[i].feelslike_f)
       }
-      
-      
       createChart();
       console.log(hourly_Data);
     },
@@ -388,4 +531,3 @@ function Return(){
   cardsContainer.append(previouscard);
   previouscard = null;
 }
-

@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, jsonify
 from urllib.request import urlopen
 import json
 import geocoder
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -36,7 +37,7 @@ def location(loc: str):
        # get the input from text box html
        input = request.args.get('inputValue')
        input = input.replace(" ", "%20")
-       print(input)
+      # print(input)
        response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={input}&days=14")
        
     global forecastData
@@ -47,16 +48,7 @@ def location(loc: str):
     return jsonify(data=forecastData, 
                    location=forecastData['location'], current=forecastData['current'], condition=forecastData['current']['condition'],
                    forecast=forecastData['forecast']['forecastday'])
-def search():
-    query = request.args.get('query', 'Paris')
-    query = query.replace(" ", "%20")
-    response = urlopen(f"https://api.weatherapi.com/v1/search.json?key={API_KEY}&q={query}")
-   
-    data = json.loads(response.read())
-    
-    # Save data to JSON file (optional)
-   
-    return data
+
 ######################
 # This function Get the card date from 
 # Main.js and returns the hourly data
@@ -64,10 +56,11 @@ def search():
 #######################
 @app.route('/getDate', methods=['POST'])
 def getDate():
+    ChangeBackground()
     cardDate = request.json 
-    print(cardDate)
+   # print(cardDate)
     hourlyData = None
-    print(forecastData)
+    #print(forecastData)
     for forecast_day in forecastData['forecast']['forecastday']:
        
         if forecast_day['date'] == cardDate:
@@ -78,6 +71,44 @@ def getDate():
    
     return  jsonify(hourlyData)
 ################################
+# This function Changes the Background of
+# The Webpage  depending on the time of day
+#
+################################
+@app.route('/Background', methods=['GET'])
+def ChangeBackground():
+    print ('Change Background')
+    sunrise_time_str = forecastData['forecast']['forecastday'][0]['astro']['sunrise']
+    sunset_time_str = forecastData['forecast']['forecastday'][0]['astro']['sunset']
+    local_time_str = forecastData['location']['localtime']
+    
+    # Convert sunrise and sunset time strings to datetime objects
+    sunrise_time = datetime.strptime(sunrise_time_str, '%I:%M %p').time()
+    sunset_time = datetime.strptime(sunset_time_str, '%I:%M %p').time()
+
+    # Get current local time in HH:MM format
+    current_time = datetime.now().time().replace(second=0, microsecond=0)
+    
+    # Check if current time is between sunrise and sunset
+    if sunrise_time <= current_time <= sunset_time:
+        suntime = "day"
+    else:
+        suntime = "night"
+    print("Current" +  sunrise_time_str)
+    return jsonify(sunrise=sunrise_time_str, sunset=sunset_time_str, suntime=suntime, localtime=local_time_str)
+
+################################
+# Get the default location which is the user location
+################################
+@app.route('/default')
+def default():
+   response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=3")
+   global forecastData
+   forecastData  = json.loads(response.read())
+   return jsonify( location=forecastData['location'], current=forecastData['current'], condition=forecastData['current']['condition'],
+                   forecast=forecastData['forecast']['forecastday'])
+
+################################
 # This functions renders the 
 # index webpage 
 ################################
@@ -86,12 +117,13 @@ def index():
    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=3")
    global forecastData
    forecastData  = json.loads(response.read())
-   print( forecastData)
+   #print( forecastData)
+  
    if request.is_json:
-        # json_data = search()
+       
         json_data = location(str)
         
-        print(json_data)
+       
        
         return json_data
    return render_template("index.html", data=forecastData,   location=forecastData['location'])
