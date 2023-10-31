@@ -56,7 +56,7 @@ def location(loc: str):
 #######################
 @app.route('/getDate', methods=['POST'])
 def getDate():
-    ChangeBackground()
+    CheckSun()
     cardDate = request.json 
    # print(cardDate)
     hourlyData = None
@@ -71,30 +71,44 @@ def getDate():
    
     return  jsonify(hourlyData)
 ################################
-# This function Changes the Background of
-# The Webpage  depending on the time of day
-#
+# This function Checks if the 
+# Sun is up or Down 
 ################################
-@app.route('/Background', methods=['GET'])
-def ChangeBackground():
+@app.route('/CheckSun', methods=['GET'])
+def CheckSun():
     print ('Change Background')
     sunrise_time_str = forecastData['forecast']['forecastday'][0]['astro']['sunrise']
     sunset_time_str = forecastData['forecast']['forecastday'][0]['astro']['sunset']
     local_time_str = forecastData['location']['localtime']
     
-    # Convert sunrise and sunset time strings to datetime objects
-    sunrise_time = datetime.strptime(sunrise_time_str, '%I:%M %p').time()
-    sunset_time = datetime.strptime(sunset_time_str, '%I:%M %p').time()
-
-    # Get current local time in HH:MM format
-    current_time = datetime.now().time().replace(second=0, microsecond=0)
+    local_time_str = local_time_str.split(' ', 1)[1]
+   
     
-    # Check if current time is between sunrise and sunset
-    if sunrise_time <= current_time <= sunset_time:
-        suntime = "day"
+    print(local_time_str)
+    
+    # Parse the input time into a datetime object
+    time_12h = datetime.strptime(sunset_time_str, "%I:%M %p")
+
+    # Convert to 24-hour format
+    sunset_time_str = time_12h.strftime("%H:%M")
+    time_12h = datetime.strptime(sunrise_time_str, "%I:%M %p")
+    sunrise_time_str = time_12h.strftime("%H:%M")
+   
+
+    # Extract hours and minutes from the time
+    hours, minutes = map(int, local_time_str.split(':'))
+    sunset_time_str = sunset_time_str.split(':')
+    sunrise_time_str =  sunrise_time_str.split(':')
+    
+    daytime_start = (int(sunrise_time_str[0]), int(sunrise_time_str[1]))  
+    daytime_end = (int(sunset_time_str[0]),int(sunset_time_str[1])) 
+    # Compare the extracted time with the daytime and nighttime ranges
+    if (daytime_start <= (hours, minutes) <= daytime_end):
+        suntime = 'day'
     else:
-        suntime = "night"
-    print("Current" +  sunrise_time_str)
+        suntime = 'night'
+        
+    
     return jsonify(sunrise=sunrise_time_str, sunset=sunset_time_str, suntime=suntime, localtime=local_time_str)
 
 ################################
@@ -125,9 +139,6 @@ def index():
    if request.is_json:
        
         json_data = location(str)
-        
-       
-       
         return json_data
    return render_template("index.html", data=forecastData,   location=forecastData['location'])
 

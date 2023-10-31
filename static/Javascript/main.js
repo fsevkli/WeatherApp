@@ -10,7 +10,13 @@ let hourlytemp = [];
 
 // Store timestamp data.
 let timestamp = [];
-
+function Autocorrect(){
+  var input = document.getElementById('Location');
+  var autocomplete = new google.maps.places.Autocomplete(input, { types: ['(cities)']['geocode'] });
+  google.maps.event.addListener(autocomplete, 'place_changed', function () {
+      var place = autocomplete.getPlace();
+  })
+}
 /**
  * Get location information and update the UI.
  * @param {Object} forecastWeek - The forecast data for the week.
@@ -28,62 +34,43 @@ function getLocation(forecastWeek) {
 function previousCard(){
   previouscard = $('#Cards').html();
 }
-/**
- * Set the background based on the time of day.
- */
-function setBackground() {
-  const localtime = new Date(document.querySelector('#localtime').textContent);
-
-  // Assuming the sunrise and sunset times in your HTML are in the format "HH:MM AM/PM"
-  const sunriseParts = document.querySelector('#sunrise').textContent.split(/[:\s]/);
-  const sunsetParts = document.querySelector('#sunset').textContent.split(/[:\s]/);
-
-  const sunriseHour = sunriseParts[2] === 'PM' ? parseInt(sunriseParts[0]) + 12 : parseInt(sunriseParts[0]);
-  const sunriseMinute = parseInt(sunriseParts[1]);
-
-  const sunsetHour = sunsetParts[2] === 'PM' ? parseInt(sunsetParts[0]) + 12 : parseInt(sunsetParts[0]);
-  const sunsetMinute = parseInt(sunsetParts[1]);
-
-  const sunrise = new Date(localtime.getFullYear(), localtime.getMonth(), localtime.getDate(), sunriseHour, sunriseMinute);
-  const sunset = new Date(localtime.getFullYear(), localtime.getMonth(), localtime.getDate(), sunsetHour, sunsetMinute);
-
-  if (localtime >= sunrise && localtime < sunset) {
-      // If the current time is between sunrise and sunset
-      document.body.className = 'sunny-bg';
-  } else {
-      // If the current time is before sunrise or after sunset
-      document.body.className = 'moon-bg';
-  }
-}
 
 /**
- * Get sunrise, sunset, and local time data from the server.
+ * Set the Background of the webpage
  */
-function GetTimeData(){
+function SetBackground(){
   $.ajax({
-    url:'/Background',
+    url:'/CheckSun',
     type:'get',
     contentType:'application/json',
   
     success: function (response) {
-      console.log("dATA"+response.suntime+" "+response.sunset+" "+response.sunrise+" "+" "+response.localtime)
-      $("body").data('sunrise', response.sunrise);
-      $("body").data('sunset', response.sunset);
-
-      $("#suntime").empty();
-      $("#sunrise").empty();
-      $("#sunset").empty();
-      $("#localtime").empty();
+      console.log(response.suntime)
+      console.log(response.suntime=== 'day')
+       if(response.suntime=== 'day'){
+        $('body').attr('class', 'sunny-bg')
+       } else {
+        $('body').attr('class', 'moon-bg');
+       }
 
       $("#suntime").append(response.suntime);
-      $("#sunrise").append(response.sunrise);
-      $("#sunset").append(response.sunset);
-      $("#localtime").append(response.localtime);
 },
 error: function(error) {
 console.error('Error:', error);
 }    
 })
+}
+
+/**
+ * Get the Word Day of the week I.e (Sunday , Monday, etc)
+ * @param {String} dateString - The date string given by the python server
+ * @returns {String} - the Word day of the Week
+ */
+function getDayOfWeek(dateString) {
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const date = new Date(dateString + 'T00:00:00');
+  const dayOfWeek = date.getDay();
+  return daysOfWeek[dayOfWeek];
 }
 
 /*
@@ -105,30 +92,17 @@ const forecastWeek  = response
 getLocation(forecastWeek)
 // Loop through the forecast data and create cards
 for (const forecast of forecastWeek.forecast) {
-//date string in "YYYY-MM-DD" format
-var dateString = forecast.date;
-
-// Parse the date string into a Date object
-var date = new Date(dateString);
-
-// Array of day names
-var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-// Get the day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-var dayOfWeek = date.getDay();
-
-// Get the name of the day
-var dayName = dayNames[dayOfWeek];
+ 
 //console.log(forecast)
 // Append a new card to div Cards 
    const cardHtml = `
     <div class="col-md-2">
       <div id="CardBlock">
-        <button class = "no-outline-button" value= ${dateString} Onclick = "ShowHourly(value)">
+        <button class = "no-outline-button" value= ${forecast.date} Onclick = "ShowHourly(value)">
         <div class="card">
           <img class="card-img-top" src="${forecast.day.condition.icon}" alt="Card image">
           <div class="card-img-overlay" style="text-align: center;">
-            <h4 class="card-title"><b>${dayName}</b></h4>
+            <h4 class="card-title"><b>${getDayOfWeek(forecast.date) }</b></h4>
             <p class="card-text"><h3>${forecast.day.condition.text}</h3></p>
             <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
             Low ${forecast.day.mintemp_f}°F |  ${forecast.day.avgtemp_f}°F | High ${forecast.day.maxtemp_f}°F 
@@ -138,25 +112,27 @@ var dayName = dayNames[dayOfWeek];
       </div>
     </div>
   `;// Need to change Mesurement if the user has chosen another one
- 
   cardsContainer.append(cardHtml);
 }
-GetTimeData();
-setBackground();
+SetBackground()
+
 },
 error: function(error) {
 console.error('Error:', error);
 }    
 })
+
 }
+
+
 
 /**
  * Initialize the page with data and event handlers.
  */
 $(document).ready(function() {
-  
+  Autocorrect()
   previousCard()
- let KeyPress = false
+  KeyPress = false
 $("#Location").on('keyup', function (event) {
     if (event.keyCode === 13) {
       KeyPress = true;
@@ -181,30 +157,16 @@ $("#Location").on('keyup', function (event) {
         getLocation(forecastWeek)
         // Loop through the forecast data and create cards
         for (const forecast of forecastWeek.forecast) {
-        //date string in "YYYY-MM-DD" format
-        var dateString = forecast.date;
-
-        // Parse the date string into a Date object
-        var date = new Date(dateString);
-
-        // Array of day names
-        var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-        // Get the day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-        var dayOfWeek = date.getDay();
-
-        // Get the name of the day
-        var dayName = dayNames[dayOfWeek];
         //console.log(forecast)
         // Append a new card to div Cards 
            const cardHtml = `
             <div class="col-md-2">
               <div id="CardBlock">
-                <button class = "no-outline-button" value= ${dateString} Onclick = "ShowHourly(value)">
+                <button class = "no-outline-button" value= ${forecast.date} Onclick = "ShowHourly(value)">
                 <div class="card">
                   <img class="card-img-top" src="${forecast.day.condition.icon}" alt="Card image">
                   <div class="card-img-overlay" style="text-align: center;">
-                    <h4 class="card-title"><b>${dayName}</b></h4>
+                    <h4 class="card-title"><b>${getDayOfWeek(forecast.date)}</b></h4>
                     <p class="card-text"><h3>${forecast.day.condition.text}</h3></p>
                     <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
                     Low ${forecast.day.mintemp_f}°F |  ${forecast.day.avgtemp_f}°F | High ${forecast.day.maxtemp_f}°F 
@@ -217,8 +179,7 @@ $("#Location").on('keyup', function (event) {
          
           cardsContainer.append(cardHtml);
         }
-        GetTimeData();
-        setBackground();
+        SetBackground()
       },
       error: function(error) {
         console.error('Error:', error);
@@ -228,11 +189,10 @@ $("#Location").on('keyup', function (event) {
  })
  if(!KeyPress){
   console.log("Not Press")
-  GetTimeData()
-  setBackground()
   defaultCard()
- }
+ } 
 })
+
 /**
  * Convert time from 24:00 to 12:00 format.
  * @param {String} DateTime - Time in 24-hour format.

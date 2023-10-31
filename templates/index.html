@@ -10,22 +10,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="{{ url_for('static',filename ='Javascript/main.js')}}"></script>
   <link href="//fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet" type="text/css" />
+  
     <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwiMuJMKlFW9a4uLz15L-5pS0YLekhXWM&callback=initMap&libraries=places&v=weekly"></script>
  </head>
 
- <body data-sunrise="" data-sunset="" class="">
-   <!-- Hidden Data Elements -->
-   <span id="suntime" style="display: none;"></span>
-   <span id="sunrise" style="display: none;"></span>
-   <span id="sunset" style="display: none;"></span>
-   <span id="localtime" style="display: none;"></span>
-
+ <body class="">
+   
    <div class="col py-3">
      <!-- Main Content -->
      <main>
        <div id="ForecastBlock" class="container" style="height: 100vh;">
-        
+
          <!-- Search Input -->
          <div id="SearchBlock" class="container">
            <div id="SearchOptions" class="d-flex flex-row align-items-center justify-content-center" style="height: 10vh;">
@@ -60,7 +56,7 @@
        </div>
      </main>
    </div>
-
+  
    <!-- JavaScript Libraries (Continued) -->
    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
@@ -71,13 +67,14 @@
  <footer class="bg-dark text-white py-4">
    <div class="container">
      <div class="row">
+      <!-- Footer Logo and Brand Info -->
        <div class="col-md-4">
-         <!-- Footer Logo and Brand Info -->
          <h5>Weather Hub</h5>
          <p>Providing you with the most accurate weather updates and forecasts.</p>
        </div>
+
+        <!-- Quick Links -->
        <div class="col-md-4">
-         <!-- Quick Links -->
          <h5>Quick Links</h5>
          <ul class="list-unstyled">
            <li><a href="#" class="text-white">Home</a></li>
@@ -86,8 +83,9 @@
            <li><a href="#" class="text-white">Contact</a></li>
          </ul>
        </div>
+       
+       <!-- Contact Info -->
        <div class="col-md+4">
-         <!-- Contact Info -->
          <h5>Contact Us</h5>
          <address>
            123 Weather Street<br />
@@ -96,7 +94,8 @@
            <a href="mailto:info@weatherhub.com" class="text-white">info@weatherhub.com</a>
          </address>
        </div>
-     </div>
+      </div>
+
      <!-- Copyright -->
      <div class="row mt-3">
        <div class="col text-center">
