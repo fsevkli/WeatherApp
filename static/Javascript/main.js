@@ -22,11 +22,8 @@ function Autocorrect(){
  * @param {Object} forecastWeek - The forecast data for the week.
  */
 function getLocation(forecastWeek) {
-  const locationHolder = $('#location')
-        locationHolder.empty(); // Clear existing
-        const locationHtml = `<p><h2> ${forecastWeek.location.name}, ${forecastWeek.location.region}  -- ${forecastWeek.location.country}  </h2></p>
-        `;
-        locationHolder.append(locationHtml)
+  inputValue = `${forecastWeek.location.name}, ${forecastWeek.location.region}, ${forecastWeek.location.country}`;
+  $('#Location').val(inputValue); 
 }
 /**
  * Store the previous card data before switching to hourly data.
@@ -105,7 +102,7 @@ for (const forecast of forecastWeek.forecast) {
             <h4 class="card-title"><b>${getDayOfWeek(forecast.date) }</b></h4>
             <p class="card-text"><h3>${forecast.day.condition.text}</h3></p>
             <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
-            Low ${forecast.day.mintemp_f}°F |  ${forecast.day.avgtemp_f}°F | High ${forecast.day.maxtemp_f}°F 
+            Low ${Math.round(forecast.day.mintemp_f)}°F |  ${Math.round(forecast.day.avgtemp_f)}°F | High ${Math.round(forecast.day.maxtemp_f)}°F 
           </div>
         </div>
         </button>
@@ -141,6 +138,8 @@ $("#Location").on('keyup', function (event) {
         inputValue = $(this).val();
         
         console.log(inputValue);
+
+
         $.ajax({
             url:'',
             type:'get',
@@ -169,7 +168,7 @@ $("#Location").on('keyup', function (event) {
                     <h4 class="card-title"><b>${getDayOfWeek(forecast.date)}</b></h4>
                     <p class="card-text"><h3>${forecast.day.condition.text}</h3></p>
                     <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
-                    Low ${forecast.day.mintemp_f}°F |  ${forecast.day.avgtemp_f}°F | High ${forecast.day.maxtemp_f}°F 
+                    Low ${Math.round(forecast.day.mintemp_f)}°F |  ${Math.round(forecast.day.avgtemp_f)}°F | High ${Math.round(forecast.day.maxtemp_f)}°F 
                   </div>
                 </div>
                 </button>
@@ -193,6 +192,8 @@ $("#Location").on('keyup', function (event) {
  } 
 })
 
+
+
 /**
  * Convert time from 24:00 to 12:00 format.
  * @param {String} DateTime - Time in 24-hour format.
@@ -210,7 +211,6 @@ const period = hours >= 12 ? "PM" : "AM";
 const formattedTime = `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')} ${period}`;
 return formattedTime
 }
-
 
 /**
  * Renders a chart using ZingChart
@@ -338,7 +338,7 @@ function createChart(){
         "tooltip": {
           "font-family": "Roboto",
           "font-size": "15px",
-          "text": "It feels like %v F at %Time",
+          "text": "It feels like %v F",
           "text-align": "left",
           "border-radius": 5,
           "padding": 10
@@ -431,7 +431,7 @@ function ShowHourly(day){
   $.ajax({
     url: '/getDate',
     method: 'POST',
-    data: JSON.stringify( day ), // Replace 'your-date-value' with the actual date
+    data: JSON.stringify( day ), 
     contentType: 'application/json',
     success: function(response) {
       previouscard = $('#Cards').html();
@@ -439,10 +439,11 @@ function ShowHourly(day){
       var hourly_Data = response;
       const cardsContainer = $('#Cards');
       cardsContainer.empty(); // Clear existing card data
+
       backButton= `<button class="button-19" role="button" Onclick = "Return()"> Back </button><!-- HTML !-->
      `;
       cardsContainer.append(backButton)
-    
+
       const scrollHtml = `
       <div class="container horizontal-scrollable"> 
       <div id = "scroll" class="row text-center"style="height: 40vh;"> 
@@ -463,7 +464,7 @@ function ShowHourly(day){
         <h4>${formattedDateTime}</h4>
         <img src="${hourly_Data[i].condition.icon}" alt="Card image">
         <h5>${hourly_Data[i].condition.text}</h5>
-        <br> ${hourly_Data[i].temp_f} °F  Feels Like ${hourly_Data[i].feelslike_f} °F </br>
+        <br> ${Math.round(hourly_Data[i].temp_f)} °F  Feels Like ${Math.round(hourly_Data[i].feelslike_f)} °F </br>
         </div>
         </div><br>
       `;// Need to change Mesurement if the user has chosen another one
