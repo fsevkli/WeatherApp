@@ -8,8 +8,6 @@ var previouscard;
 // Store hourly temperature data.
 let hourlytemp = [];
 
-
-
 // Store timestamp data.
 let timestamp = [];
 function Autocorrect(){
