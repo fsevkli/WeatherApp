@@ -6,6 +6,7 @@
  * and time from timstamp
  */
 function hourlyChart(){
+    console.log(hourlytemp);
     var myConfig = {
       "globals": {
         "font-family": "Roboto"
@@ -337,7 +338,7 @@ function precipationChart(){
           "tooltip": {
             "font-family": "Roboto",
             "font-size": "15px",
-            "text": "It feels like %v F at %Time",
+            "text": "Precipation in inches %v F at %Time",
             "text-align": "left",
             "border-radius": 5,
             "padding": 10

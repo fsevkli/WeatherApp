@@ -202,7 +202,6 @@ function ShowHourly(day){
       backButton= `<button class="button-19" role="button" Onclick = "Return()"> Back </button>
      `;
       cardsContainer.append(backButton)
-    console.log(response)
       const scrollHtml = `
       <div class="container horizontal-scrollable"> 
       <div id = "scroll" class="row text-center"style="height: 40vh;"> 
@@ -252,4 +251,5 @@ function Return(){
   console.log('Returning');
   cardsContainer.append(previouscard);
   previouscard = null;
+  zingchart.exec('chart','destroy')
 }
