@@ -14,6 +14,17 @@ let humidity = [];
 
 // Store timestamp data.
 let timestamp = [];
+
+let fahrenheit;
+
+function checkSelectedMeasurement() {
+  dropdown = $('.dropdown .nav-link.dropdown-toggle').text();
+  if(dropdown == 'US | F'){
+   fahrenheit = true;
+  } else{
+   fahrenheit = false;
+  }
+ }
 /**
  * This function is Run the google autocorrect api
  */
@@ -96,7 +107,7 @@ function getWeekly (urlString, _value){
     }, 
     success: function (response) {
         console.log(response)
-        
+        checkSelectedMeasurement();
 const cardsContainer = $('#Cards');
 cardsContainer.empty(); // Clear existing card data
 const forecastWeek  = response
@@ -116,7 +127,9 @@ for (const forecast of forecastWeek.forecast) {
             <h4 class="card-title"><b>${getDayOfWeek(forecast.date)}</b></h4>
             <p class="card-text"><h3>${forecast.day.condition.text}</h3></p>
             <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
-            Low ${Math.round(forecast.day.mintemp_f)}°F |  ${Math.round(forecast.day.avgtemp_f)}°F | High ${Math.round(forecast.day.maxtemp_f)}°F 
+            Low ${(fahrenheit) ? Math.round(forecast.day.mintemp_f)+" °F":Math.round(forecast.day.mintemp_c)+" °C"} | 
+             ${(fahrenheit) ? Math.round(forecast.day.avgtemp_f)+" °F":Math.round(forecast.day.avgtemp_c)+" °C"} 
+             | High ${(fahrenheit) ? Math.round(forecast.day.maxtemp_f)+" °F":Math.round(forecast.day.maxtemp_c)+" °C"} 
           </div>
         </div>
         </button>
@@ -132,6 +145,7 @@ console.error('Error:', error);
 }    
 })
 }  
+
 
 
 /**
@@ -178,10 +192,6 @@ return formattedTime
 
 
 
-
-
-  
-
 /**
  * Show hourly data for a specific day.
  * @param {String} day - The selected day for hourly data.
@@ -195,6 +205,8 @@ function ShowHourly(day){
     data: JSON.stringify( day ), // Replace with the actual date
     contentType: 'application/json',
     success: function(response) {
+     console.log( $('.dropdown .nav-link.dropdown-toggle').text());
+     checkSelectedMeasurement();
       previouscard = $('#Cards').html();
       // Parse the JSON response
       var hourly_Data = response;
@@ -228,7 +240,7 @@ function ShowHourly(day){
         <h4>${formattedDateTime}</h4>
         <img src="${hourly_Data[i].condition.icon}" alt="Card image">
         <h5>${hourly_Data[i].condition.text}</h5>
-        <br> ${hourly_Data[i].temp_f} °F  Feels Like ${hourly_Data[i].feelslike_f} °F </br>
+        <br> ${(fahrenheit) ? hourly_Data[i].temp_f+" °F":hourly_Data[i].temp_c +" °C"} Feels Like ${(fahrenheit) ? hourly_Data[i].feelslike_f+" °F":hourly_Data[i].feelslike_c+" °C"} </br>
         </div>
         </div><br>
       `;// Need to change Mesurement if the user has chosen another one
