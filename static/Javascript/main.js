@@ -112,7 +112,7 @@ for (const forecast of forecastWeek.forecast) {
             <h4 class="card-title"><b>${getDayOfWeek(forecast.date)}</b></h4>
             <p class="card-text"><h3>${forecast.day.condition.text}</h3></p>
             <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
-            Low ${forecast.day.mintemp_f}°F |  ${forecast.day.avgtemp_f}°F | High ${forecast.day.maxtemp_f}°F 
+            Low ${Math.round(forecast.day.mintemp_f)}°F |  ${Math.round(forecast.day.avgtemp_f)}°F | High ${Math.round(forecast.day.maxtemp_f)}°F 
           </div>
         </div>
         </button>
