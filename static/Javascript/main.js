@@ -151,6 +151,7 @@ $(document).ready(function() {
 function CheckInput(){
   $("#Location").on('keyup', function (event) {
     if (event.keyCode === 13) {
+      zingchart.exec('chart','destroy')
       $('body').attr('class', '')
         inputValue = $(this).val();
         getWeekly('', inputValue)
@@ -209,6 +210,9 @@ function ShowHourly(day){
       </div>
       <div id="chart" style="height: 40vh;"></div> 
       `;
+      hourlytemp = []
+      precipation = []
+      humidity = []
       cardsContainer.append(scrollHtml);
       for ( i = 0; i < hourly_Data.length; i++) {
         // Get the formatted time string
@@ -232,7 +236,7 @@ function ShowHourly(day){
       $('#scroll').append(cardHtml)
        // console.log("DATA : "+ hourly_Data[i].feelslike_f)
       }
-      cardsContainer.append('  <button class="button-19" role="button" Onclick = "precipationChart()"> Precipation </button><button class="button-19" role="button" Onclick = "hourlyChart()"> Hourly </button><button class="button-19" role="button" Onclick = "humidityChart()"> Humidity </button>')
+      cardsContainer.append(' <div class "row"> <button class="button-19" role="button" Onclick = "precipationChart()"> Precipation </button><button class="button-19" role="button" Onclick = "hourlyChart()"> Hourly </button><button class="button-19" role="button" Onclick = "humidityChart()"> Humidity </button></div>');
       hourlyChart();
       console.log(hourly_Data);
     },

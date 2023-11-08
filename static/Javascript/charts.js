@@ -6,6 +6,7 @@
  * and time from timstamp
  */
 function hourlyChart(){
+    zingchart.exec('chart','destroy')
     console.log(hourlytemp);
     var myConfig = {
       "globals": {
@@ -216,6 +217,7 @@ function hourlyChart(){
  * and time from timstamp
  */
 function precipationChart(){
+    zingchart.exec('chart','destroy')
     var myConfig = {
       "globals": {
         "font-family": "Roboto"
@@ -423,6 +425,7 @@ function precipationChart(){
  * and time from timstamp
  */
 function humidityChart(){
+    zingchart.exec('chart','destroy')
     var myConfig = {
       "globals": {
         "font-family": "Roboto"
