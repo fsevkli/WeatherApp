@@ -131,7 +131,7 @@ function hourlyChart(){
           "tooltip": {
             "font-family": "Roboto",
             "font-size": "15px",
-            "text": "It feels like %v F at %Time",
+            "text": "It feels like %v at %T",
             "text-align": "left",
             "border-radius": 5,
             "padding": 10

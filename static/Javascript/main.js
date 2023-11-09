@@ -17,12 +17,14 @@ let timestamp = [];
 
 // Default
 let tempUnit = 'F';
+
+let selectedUnit;
 /**
  * This function is Run the google autocorrect api
  */
 function Autocorrect(){
   var input = document.getElementById('Location');
-  var autocomplete = new google.maps.places.Autocomplete(input, { types: ['(cities)'] });
+  var autocomplete = new google.maps.places.Autocomplete(input, { types: ['(cities)']['geocode']});
   google.maps.event.addListener(autocomplete, 'place_changed', function () {
       var place = autocomplete.getPlace();
   })
@@ -154,10 +156,16 @@ $(document).ready(function() {
   getWeekly('/default', '');
   Autocorrect();
   previousCard();
+  CheckInput();
   // CheckInput function is not provided but should be included here if it's defined elsewhere
   // Add event listeners for temperature unit changes
   $('.metric-dropdown-item').click(function() {
-    const selectedUnit = $(this).text();
+    zingchart.exec('chart','destroy')
+    hourlytemp = [];
+    precipation = [];
+    humidity = [];
+    timestamp = [];
+    selectedUnit = $(this).text();
     $('#metricDropdown').text(selectedUnit);
     tempUnit = selectedUnit.includes('F') ? 'F' : 'C';
     getWeekly('/default', inputValue); // Refresh the cards with the new temperature unit
