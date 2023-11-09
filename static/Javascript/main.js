@@ -15,22 +15,14 @@ let humidity = [];
 // Store timestamp data.
 let timestamp = [];
 
-let fahrenheit;
-
-function checkSelectedMeasurement() {
-  dropdown = $('.dropdown .nav-link.dropdown-toggle').text();
-  if(dropdown == 'US | F'){
-   fahrenheit = true;
-  } else{
-   fahrenheit = false;
-  }
- }
+// Default
+let tempUnit = 'F';
 /**
  * This function is Run the google autocorrect api
  */
 function Autocorrect(){
   var input = document.getElementById('Location');
-  var autocomplete = new google.maps.places.Autocomplete(input, { types: ['(cities)']['geocode'] });
+  var autocomplete = new google.maps.places.Autocomplete(input, { types: ['(cities)'] });
   google.maps.event.addListener(autocomplete, 'place_changed', function () {
       var place = autocomplete.getPlace();
   })
@@ -97,67 +89,80 @@ function getDayOfWeek(dateString) {
  * @param {String} urlString - The url to search for on the python server
  * @param {String} _value - The input value to give to the python server
  */
-function getWeekly (urlString, _value){
+function getWeekly(urlString, _value) {
   $.ajax({
-    url:urlString,
-    type:'get',
-    contentType:'application/json',
-    data: {
-       inputValue: _value
-    }, 
-    success: function (response) {
-        console.log(response)
-        checkSelectedMeasurement();
-const cardsContainer = $('#Cards');
-cardsContainer.empty(); // Clear existing card data
-const forecastWeek  = response
-getLocation(forecastWeek)
-// Loop through the forecast data and create cards
-for (const forecast of forecastWeek.forecast) {
-//console.log(forecast)
-// Append a new card to div Cards
+      url: urlString,
+      type: 'get',
+      contentType: 'application/json',
+      data: {
+          inputValue: _value
+      },
+      success: function (response) {
+          console.log("getWeekly response:", response);
 
-   const cardHtml = `
-    <div class="col-md-2">
-      <div id="CardBlock">
-        <button class = "no-outline-button" value= ${forecast.date} Onclick = "ShowHourly(value)">
-        <div class="card">
-          <img class="card-img-top" src="${forecast.day.condition.icon}" alt="Card image">
-          <div class="card-img-overlay" style="text-align: center;">
-            <h4 class="card-title"><b>${getDayOfWeek(forecast.date)}</b></h4>
-            <p class="card-text"><h3>${forecast.day.condition.text}</h3></p>
-            <img src="static/Images/thermometer.png" alt="Card image" width="20" height="20">
-            Low ${(fahrenheit) ? Math.round(forecast.day.mintemp_f)+" °F":Math.round(forecast.day.mintemp_c)+" °C"} | 
-             ${(fahrenheit) ? Math.round(forecast.day.avgtemp_f)+" °F":Math.round(forecast.day.avgtemp_c)+" °C"} 
-             | High ${(fahrenheit) ? Math.round(forecast.day.maxtemp_f)+" °F":Math.round(forecast.day.maxtemp_c)+" °C"} 
-          </div>
-        </div>
-        </button>
-      </div>
-    </div>
-  `;// Need to change Mesurement if the user has chosen another one
-  cardsContainer.append(cardHtml);
+          const cardsContainer = $('#Cards');
+          cardsContainer.empty(); // Clear existing card data
+
+          // Here we directly use 'response.forecast' since the backend is structured to send 'forecast' as top-level key
+          if (!response || !response.forecast) {
+              console.error('Forecast data is missing or not in expected format:', response);
+              return; // Stop execution if data is not correct
+          }
+
+          // Update location information on the page
+          getLocation(response);
+
+          // Loop through the forecast data and create cards
+          response.forecast.forEach((dayForecast) => {
+              const tempLow = tempUnit === 'F' ? Math.round(dayForecast.day.mintemp_f) : Math.round(dayForecast.day.mintemp_c);
+              const tempAvg = tempUnit === 'F' ? Math.round(dayForecast.day.avgtemp_f) : Math.round(dayForecast.day.avgtemp_c);
+              const tempHigh = tempUnit === 'F' ? Math.round(dayForecast.day.maxtemp_f) : Math.round(dayForecast.day.maxtemp_c);
+              const unitSymbol = tempUnit === 'F' ? '°F' : '°C';
+
+              const cardHtml = `
+                  <div class="col-md-2">
+                      <div id="CardBlock">
+                          <button class="no-outline-button" value="${dayForecast.date}" onclick="ShowHourly(value)">
+                              <div class="card">
+                                  <img class="card-img-top" src="https:${dayForecast.day.condition.icon}" alt="Weather icon">
+                                  <div class="card-img-overlay" style="text-align: center;">
+                                      <h4 class="card-title"><b>${getDayOfWeek(dayForecast.date)}</b></h4>
+                                      <p class="card-text"><h3>${dayForecast.day.condition.text}</h3></p>
+                                      <img src="static/Images/thermometer.png" alt="Thermometer" width="20" height="20">
+                                      Low ${tempLow}${unitSymbol} | Avg ${tempAvg}${unitSymbol} | High ${tempHigh}${unitSymbol}
+                                  </div>
+                              </div>
+                          </button>
+                      </div>
+                  </div>
+              `;
+
+              cardsContainer.append(cardHtml);
+          });
+
+          SetBackground();
+      },
+      error: function (error) {
+          console.error('Error in getWeekly:', error);
+      }
+  });
 }
-SetBackground()
-},
-error: function(error) {
-console.error('Error:', error);
-}    
-})
-}  
-
-
-
 /**
  * Initialize the page with data and event handlers.
  */
 $(document).ready(function() {
-  getWeekly('/default', '')
-  Autocorrect()
-  previousCard()
-  CheckInput()
-})
-
+  getWeekly('/default', '');
+  Autocorrect();
+  previousCard();
+  // CheckInput function is not provided but should be included here if it's defined elsewhere
+  // Add event listeners for temperature unit changes
+  $('.metric-dropdown-item').click(function() {
+    const selectedUnit = $(this).text();
+    $('#metricDropdown').text(selectedUnit);
+    tempUnit = selectedUnit.includes('F') ? 'F' : 'C';
+    getWeekly('/default', inputValue); // Refresh the cards with the new temperature unit
+  });
+});
 /**
  * This Function check of the user pressed the Enter key
  * if so render the cards with the input of in #Location
@@ -189,75 +194,87 @@ const period = hours >= 12 ? "PM" : "AM";
 const formattedTime = `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')} ${period}`;
 return formattedTime
 }
-
-
-
 /**
  * Show hourly data for a specific day.
  * @param {String} day - The selected day for hourly data.
  */
-function ShowHourly(day){
-  console.log(day)
-  
+function ShowHourly(day) {
+  console.log("Requested day for hourly data:", day);
+
   $.ajax({
-    url: '/getDate',
-    method: 'POST',
-    data: JSON.stringify( day ), // Replace with the actual date
-    contentType: 'application/json',
-    success: function(response) {
-     console.log( $('.dropdown .nav-link.dropdown-toggle').text());
-     checkSelectedMeasurement();
-      previouscard = $('#Cards').html();
-      // Parse the JSON response
-      var hourly_Data = response;
-      const cardsContainer = $('#Cards');
-      cardsContainer.empty(); // Clear existing card data
-      backButton= `<button class="button-19" role="button" Onclick = "Return()"> Back </button>
-     `;
-      cardsContainer.append(backButton)
-      const scrollHtml = `
-      <div class="container horizontal-scrollable"> 
-      <div id = "scroll" class="row text-center"style="height: 40vh;"> 
-      </div> 
-      </div>
-      <div id="chart" style="height: 40vh;"></div> 
-      `;
-      hourlytemp = []
-      precipation = []
-      humidity = []
-      cardsContainer.append(scrollHtml);
-      for ( i = 0; i < hourly_Data.length; i++) {
-        // Get the formatted time string
-       
-        const formattedDateTime = GetTime(hourly_Data[i].time);
-        hourlytemp.push(hourly_Data[i].temp_f);
-        precipation.push(hourly_Data[i].precip_in)
-        humidity.push(hourly_Data[i].humidity)
-        timestamp.push(formattedDateTime)
-      
-         cardHtml =  `
-        <br><div class="col-md-2">
-        <h4>${formattedDateTime}</h4>
-        <img src="${hourly_Data[i].condition.icon}" alt="Card image">
-        <h5>${hourly_Data[i].condition.text}</h5>
-        <br> ${(fahrenheit) ? hourly_Data[i].temp_f+" °F":hourly_Data[i].temp_c +" °C"} Feels Like ${(fahrenheit) ? hourly_Data[i].feelslike_f+" °F":hourly_Data[i].feelslike_c+" °C"} </br>
-        </div>
-        </div><br>
-      `;// Need to change Mesurement if the user has chosen another one
-       
-      $('#scroll').append(cardHtml)
-       // console.log("DATA : "+ hourly_Data[i].feelslike_f)
+      url: '/getDate',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ day: day }),
+      success: function(response) {
+          if (!response || !Array.isArray(response)) {
+              console.error('Hourly data is missing or not an array:', response);
+              return; // Stop execution if data is not correct
+          }
+
+          // Assuming 'response' is now a valid array of hourly forecast data
+          previouscard = $('#Cards').html();
+          const cardsContainer = $('#Cards');
+          cardsContainer.empty(); // Clear existing card data
+
+
+          const backButton = `<button class="button-19" role="button" onclick="Return()"> Back </button>`;
+          cardsContainer.append(backButton);
+
+          const scrollContainer = $('<div>', { 'class': 'container horizontal-scrollable' });
+          const scrollRow = $('<div>', { 'id': 'scroll', 'class': 'row text-center', 'style': 'height: 40vh;' });
+          scrollContainer.append(scrollRow);
+          cardsContainer.append(scrollContainer);
+
+          // Reset arrays for new data
+          hourlytemp = [];
+          precipation = [];
+          humidity = [];
+          timestamp = [];
+
+          response.forEach(hour => {
+              const formattedTime = GetTime(hour.time);
+              const temp = tempUnit === 'F' ? Math.round(hour.temp_f) : Math.round(hour.temp_c);
+              const feelsLike = tempUnit === 'F' ? Math.round(hour.feelslike_f) : Math.round(hour.feelslike_c);
+              const unitSymbol = tempUnit === 'F' ? '°F' : '°C';
+
+              hourlytemp.push(temp);
+              precipation.push(hour.precip_in);
+              humidity.push(hour.humidity);
+              timestamp.push(formattedTime);
+
+              const cardHtml = `
+                  <div class="col-md-2">
+                      <h4>${formattedTime}</h4>
+                      <img src="${hour.condition.icon}" alt="Weather icon">
+                      <h5>${hour.condition.text}</h5>
+                      <div>${temp} ${unitSymbol} Feels Like ${feelsLike} ${unitSymbol}</div>
+                  </div>
+              `;
+              scrollRow.append(cardHtml);
+          });
+
+          // Append chart and buttons for additional data visualization
+          cardsContainer.append(`
+              <div id="chart" style="height: 40vh;"></div>
+              <div class="row">
+                  <button class="button-19" role="button" onclick="precipationChart()"> Precipation </button>
+                  <button class="button-19" role="button" onclick="hourlyChart()"> Hourly </button>
+                  <button class="button-19" role="button" onclick="humidityChart()"> Humidity </button>
+              </div>
+          `);
+          // Call hourlyChart() if it's defined
+          if (typeof hourlyChart === 'function') {
+              hourlyChart();
+          } else {
+              console.error('hourlyChart function is not defined');
+          }
+      },
+      error: function(error) {
+          console.error('Error fetching hourly data:', error);
       }
-      cardsContainer.append(' <div class "row"> <button class="button-19" role="button" Onclick = "precipationChart()"> Precipation </button><button class="button-19" role="button" Onclick = "hourlyChart()"> Hourly </button><button class="button-19" role="button" Onclick = "humidityChart()"> Humidity </button></div>');
-      hourlyChart();
-      console.log(hourly_Data);
-    },
-    error: function(error) {
-      console.error('Error:', error);
-    }
   });
 }
-
 /**
  * Returns the previous Card ui
  */

@@ -38,9 +38,17 @@ def location(loc: str):
 @app.route('/getDate', methods=['POST'])
 def getDate():
     """Get the card date from Main.js and return the hourly data for that date."""
-    cardDate = request.json 
-    hourlyData = next((forecast_day['hour'] for forecast_day in forecastData['forecast']['forecastday'] if forecast_day['date'] == cardDate), None)
-    return jsonify(hourlyData)
+    cardDate = request.json['day']
+    print("Received date for hourly data:", cardDate)  # Diagnostic print
+
+    # Find the matching date entry in forecastData
+    for forecast_day in forecastData['forecast']['forecastday']:
+        if forecast_day['date'] == cardDate:
+            hourlyData = forecast_day['hour']
+            return jsonify(hourlyData)
+
+    # Return an empty array if no matching date was found
+    return jsonify([])
 
 @app.route('/CheckSun', methods=['GET'])
 def CheckSun():

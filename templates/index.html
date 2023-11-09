@@ -54,8 +54,8 @@
                  <img src="{{ url_for('static',filename ='Images/earth.png')}}" title="globe icons" width="20" height="20" /> US | F
                </button>
                <div class="dropdown-menu" aria-labelledby="metricDropdown">
-                 <a class="dropdown-item metric-dropdown-item" href="#">US | F</a>
-                 <a class="dropdown-item metric-dropdown-item" href="#">METRIC | C</a>
+                 <a class="dropdown-item metric-dropdown-item" href="#">Fahrenheit</a>
+                 <a class="dropdown-item metric-dropdown-item" href="#">Celsius</a>
                </div>
              </div>
            </div>
@@ -80,7 +80,7 @@
    <script>
   $(document).ready(() => {
     $('#locationDropdown').text('My Location'); 
-    $('#metricDropdown').text('US | F'); 
+    $('#metricDropdown').text('Fahrenheit'); 
 
     $('.location-dropdown-item').click(function() { 
       var selectedText = $(this).text(); 
