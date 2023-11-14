@@ -47,4 +47,4 @@ python app.py
 Contributions are welcome. Ensure adherence to coding standards, documentation norms, and thorough testing.
 
 ## License
-Licensed under Apache 2.0. See the LICENSE file for more details.
+Licensed under MIT license. See the LICENSE file for more details.
