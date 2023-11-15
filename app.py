@@ -1,11 +1,13 @@
 import os
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 from urllib.request import urlopen
 import json
 import geocoder
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
+
 
 API_KEY = '5dea31b4204948a681b182600230709'
 

@@ -6,6 +6,8 @@
  * and time from timstamp
  */
 function hourlyChart(){
+  $('#windy').empty()
+  $('#windy').attr('id','chart')
     zingchart.exec('chart','destroy')
     console.log(hourlytemp);
     var myConfig = {
@@ -217,6 +219,8 @@ function hourlyChart(){
  * and time from timstamp
  */
 function precipationChart(){
+  $('#windy').empty()
+  $('#windy').attr('id','chart')
     zingchart.exec('chart','destroy')
     var myConfig = {
       "globals": {
@@ -425,6 +429,8 @@ function precipationChart(){
  * and time from timstamp
  */
 function humidityChart(){
+  $('#windy').empty()
+  $('#windy').attr('id','chart')
     zingchart.exec('chart','destroy')
     var myConfig = {
       "globals": {
@@ -627,4 +633,77 @@ function humidityChart(){
       height: '100%',
       width: '100%'
     });
+  }
+
+  function windChart(){
+    zingchart.exec('chart','destroy')
+    let myConfig = {
+      globals: {
+        fontFamily: 'Roboto'
+      },
+      type: 'vectorplot',
+      plotarea: {
+        margin: 'dynamic'
+      },
+      options: {
+        arrow: {
+          minLength: '6px',
+          maxLength: '12px',
+          style: {
+            size: '3px',
+            backgroundColor: '#333'
+          }
+        },
+        data: [
+          [95, 65, 40, 288],
+          [95, 70, 35, 297],
+          [95, 75, 30, 306],
+          [95, 80, 25, 315],
+          [95, 85, 20, 324],
+          [95, 90, 15, 333],
+          [95, 95, 10, 342]
+        ]
+      }
+    };
+     
+    // RENDER CHARTS
+    // -----------------------------
+    zingchart.render({
+      id: 'chart',
+      data: myConfig,
+      height: '100%',
+      width: '100%'
+    });
+  }
+
+  function WeatherMap(){
+    zingchart.exec('chart','destroy')
+    $('#chart').attr('id','windy')
+    
+    const options = {
+      // Required: API key
+      key: 'xDYEhbSjWMYknP1aR6cViIoK0PK7DxVO', // REPLACE WITH YOUR KEY !!!
+  
+      // Put additional console output
+      verbose: true,
+  
+      // Optional: Initial state of the map
+      lat: latu,
+      lon: long,
+      zoom: 10,
+  };
+  
+  // Initialize Windy API
+  windyInit(options, windyAPI => {
+      // windyAPI is ready, and contain 'map', 'store',
+      // 'picker' and other usefull stuff
+  
+      const { map } = windyAPI;
+      // .map is instance of Leaflet map
+  
+      L.popup()
+          .setLatLng([latu, long])
+          .setContent(currentLocation)
+          .openOn(map);
+  });
   }

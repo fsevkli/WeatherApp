@@ -19,6 +19,10 @@ let timestamp = [];
 let tempUnit = 'F';
 
 let selectedUnit;
+
+let latu;
+let long;
+let currentLocation;
 /**
  * This function is Run the google autocorrect api
  */
@@ -37,9 +41,13 @@ function Autocorrect(){
 function getLocation(forecastWeek) {
   const locationHolder = $('#location')
         locationHolder.empty(); // Clear existing
+        currentLocation = forecastWeek.location.name+" , "+forecastWeek.location.region
         const locationHtml = `<p><h2> ${forecastWeek.location.name}, ${forecastWeek.location.region}  -- ${forecastWeek.location.country}  </h2></p>
         `;
         $('#Location').attr('value', forecastWeek.location.name+' '+forecastWeek.location.region+' , '+forecastWeek.location.country)
+        latu = forecastWeek.location.lat;
+        long = forecastWeek.location.lon;
+        console.log("lat "+latu+"Long "+long);
         locationHolder.append(locationHtml)
 }
 /**
@@ -141,7 +149,7 @@ function getWeekly(urlString, _value) {
 
               cardsContainer.append(cardHtml);
           });
-
+         
           SetBackground();
       },
       error: function (error) {
@@ -201,6 +209,12 @@ const minutes = parsedDate.getMinutes();
 const period = hours >= 12 ? "PM" : "AM";
 const formattedTime = `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')} ${period}`;
 return formattedTime
+}
+function toggleActive(button) {
+  // Remove 'active' class from all buttons
+  $('.nav-link').removeClass('active');
+  // Add 'active' class to the clicked button
+  $(button).addClass('active');
 }
 /**
  * Show hourly data for a specific day.
@@ -265,10 +279,12 @@ function ShowHourly(day) {
           // Append chart and buttons for additional data visualization
           cardsContainer.append(`
               <div id="chart" style="height: 40vh;"></div>
-              <div class="row">
-                  <button class="button-19" role="button" onclick="precipationChart()"> Precipation </button>
-                  <button class="button-19" role="button" onclick="hourlyChart()"> Hourly </button>
-                  <button class="button-19" role="button" onclick="humidityChart()"> Humidity </button>
+              <nav class="nav nav-pills nav-fill">
+              <a class="nav-item nav-link" onclick="toggleActive(this); precipationChart()">Precipitation</a>
+              <a class="nav-item nav-link active" onclick="toggleActive(this); hourlyChart()">Hourly</a>
+              <a class="nav-item nav-link" onclick="toggleActive(this); humidityChart()">Humidity</a>
+              <a class="nav-item nav-link" onclick="toggleActive(this); WeatherMap()">Weather Map</a>
+              </nav>
               </div>
           `);
           // Call hourlyChart() if it's defined
@@ -282,6 +298,25 @@ function ShowHourly(day) {
           console.error('Error fetching hourly data:', error);
       }
   });
+}
+
+function Login (){
+  loginVal = $('#login').val()
+  passwordVal = $('#password').val() 
+  console.log(loginVal)
+  $.ajax({
+    url: '/login',
+    type: 'POST',
+    contentType: 'application/json',
+    data:  JSON.stringify({ loginVal:  loginVal , passwordVal : passwordVal}),
+    success: function (response) {
+        console.log("Login", response);
+      
+    },
+    error: function (error) {
+        console.error('Error in login:', error);
+    }
+});
 }
 /**
  * Returns the previous Card ui
