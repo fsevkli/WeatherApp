@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, jsonify, session
 from urllib.request import urlopen
 import json
 import geocoder
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
