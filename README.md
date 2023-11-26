@@ -10,13 +10,17 @@ This web application is designed to provide users with real-time weather updates
 - **Hourly and Daily Forecasts**: Offers detailed weather forecasts for up to 14 days, including hourly data.
 - **Location Detection**: Automatically detects the user's location for relevant weather updates.
 - **Custom Location Search**: Allows users to search for weather data in different locations.
+- **Custom Weather Map**: View the wind, temperature, and pressure map of different locations.
 - **Dynamic Backgrounds**: The UI changes between day and night modes based on real-time data.
+- **Weather Charts**: View different weather charts from hourly temperature changes to Humidity changes.
 
 1. **Install Dependencies**: 
-pip install flask geocoder
+pip install flask 
+pip install geocoder
 
 2. **Set API Key**: 
 - Set your WeatherAPI key in the application as `API_KEY`.
+- Set your WindyAPI key in the application as `API_KEY`.
 
 3. **Run the Application**:
 python app.py
@@ -33,6 +37,8 @@ python app.py
 
 - **WeatherAPI**: For weather data (requires an API key).
 - **Geocoder**: To determine the user's location via IP address.
+- **WindyApi**: For showing the wind map api (requires an API key)
+- **GoogleMapsAPI**: To get the location autoCorrect 
 
 ## Endpoints
 

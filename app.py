@@ -1,15 +1,14 @@
 import os
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify
 from urllib.request import urlopen
 import json
 import geocoder
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
 
 
-API_KEY = '5dea31b4204948a681b182600230709'
+API_KEY = 'afa247cad8e14d7e85b172447232611'
 
 def get_location():
     """Get the location of the user via IP address."""
@@ -22,10 +21,10 @@ def location(loc: str):
     loc = loc.split(" ")[0] 
     if loc == "current":
         latlng = get_location()
-        response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={latlng[0]},{latlng[1]}&days=14")
+        response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={latlng[0]},{latlng[1]}&days=6")
     else:
         input_value = request.args.get('inputValue').replace(" ", "%20")
-        response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={input_value}&days=14")
+        response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={input_value}&days=6")
        
     global forecastData
     forecastData = json.loads(response.read())
@@ -73,7 +72,7 @@ def CheckSun():
 @app.route('/default')
 def default():
     """Get the default location which is the user location."""
-    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=3")
+    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=6")
     forecastData = json.loads(response.read())
     return jsonify(
         location=forecastData['location'], 
@@ -85,7 +84,7 @@ def default():
 @app.route('/')
 def index():
     """Render the index webpage."""
-    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=3")
+    response = urlopen(f"https://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={get_location()[0]},{get_location()[1]}&days=6")
     global forecastData
     forecastData = json.loads(response.read())
     if request.is_json:

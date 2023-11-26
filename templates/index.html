@@ -6,8 +6,9 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>	
   <link rel="stylesheet" href="{{ url_for('static',filename ='css/style.css')}}" />
   <title>Weather Hub</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename ='Images/weather.png')}}">
   <meta charset="utf-8" />
-
+  <script src="https://cdn.logwork.com/widget/digital.js"></script>
   <!-- JavaScript Libraries -->
   
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -62,9 +63,17 @@
              </div>
            </div>
          </div>
-       
-         <div id="forecastDetails">
+        
+      
 
+       
+
+         <div id="forecastDetails">
+          <div id="overlay" style="display:none;">
+            <div class="spinner"></div>
+            <br/>
+            Loading...
+        </div>
          </div>
          <!-- Forecast Details -->
          <div id="block" class="container">
@@ -80,25 +89,7 @@
    </div>
   
 
-   <script>
-  $(document).ready(() => {
-    $('#locationDropdown').text('My Location'); 
-    $('#metricDropdown').text('Fahrenheit'); 
-
-    $('.location-dropdown-item').click(function() { 
-      var selectedText = $(this).text(); 
-      $('#locationDropdown').text(selectedText);
-
-    }); 
-
-    $('.metric-dropdown-item').click(function() { 
-      var selectedText = $(this).text(); 
-      $('#metricDropdown').text(selectedText); 
-    }); 
-  }); 
-
-
-   </script>
+ 
    <!-- JavaScript Libraries (Continued) -->
    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
@@ -142,6 +133,7 @@
 
      <!-- Copyright -->
      <div class="row mt-3">
+      <a href="https://www.flaticon.com/free-icons/app" title="app icons">App icons created by Freepik - Flaticon</a>
        <div class="col text-center">
          &copy; 2023 Weather Hub. All Rights Reserved.
        </div>

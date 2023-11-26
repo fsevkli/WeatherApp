@@ -20,9 +20,13 @@ let tempUnit = 'F';
 
 let selectedUnit;
 
+// Store latitude.
 let latu;
+// Store longitude.
 let long;
+
 let currentLocation;
+
 /**
  * This function is Run the google autocorrect api
  */
@@ -45,9 +49,10 @@ function getLocation(forecastWeek) {
         const locationHtml = `<p><h2> ${forecastWeek.location.name}, ${forecastWeek.location.region}  -- ${forecastWeek.location.country}  </h2></p>
         `;
         $('#Location').attr('value', forecastWeek.location.name+' '+forecastWeek.location.region+' , '+forecastWeek.location.country)
+
         latu = forecastWeek.location.lat;
         long = forecastWeek.location.lon;
-        console.log("lat "+latu+"Long "+long);
+
         locationHolder.append(locationHtml)
 }
 /**
@@ -100,6 +105,7 @@ function getDayOfWeek(dateString) {
  * @param {String} _value - The input value to give to the python server
  */
 function getWeekly(urlString, _value) {
+   $('#overlay').fadeIn().delay(2000).fadeOut();
   $.ajax({
       url: urlString,
       type: 'get',
@@ -121,7 +127,7 @@ function getWeekly(urlString, _value) {
 
           // Update location information on the page
           getLocation(response);
-
+        
           // Loop through the forecast data and create cards
           response.forecast.forEach((dayForecast) => {
               const tempLow = tempUnit === 'F' ? Math.round(dayForecast.day.mintemp_f) : Math.round(dayForecast.day.mintemp_c);
@@ -151,11 +157,28 @@ function getWeekly(urlString, _value) {
           });
          
           SetBackground();
+          $('#overlay').fadeOut();
+          
       },
       error: function (error) {
           console.error('Error in getWeekly:', error);
       }
   });
+}
+function MesurementDropdown (){
+  $('#locationDropdown').text('My Location'); 
+    $('#metricDropdown').text('Fahrenheit'); 
+
+    $('.location-dropdown-item').click(function() { 
+      var selectedText = $(this).text(); 
+      $('#locationDropdown').text(selectedText);
+
+    }); 
+
+    $('.metric-dropdown-item').click(function() { 
+      var selectedText = $(this).text(); 
+      $('#metricDropdown').text(selectedText); 
+    }); 
 }
 /**
  * Initialize the page with data and event handlers.
@@ -165,6 +188,7 @@ $(document).ready(function() {
   Autocorrect();
   previousCard();
   CheckInput();
+  MesurementDropdown();
   // CheckInput function is not provided but should be included here if it's defined elsewhere
   // Add event listeners for temperature unit changes
   $('.metric-dropdown-item').click(function() {
@@ -300,24 +324,6 @@ function ShowHourly(day) {
   });
 }
 
-function Login (){
-  loginVal = $('#login').val()
-  passwordVal = $('#password').val() 
-  console.log(loginVal)
-  $.ajax({
-    url: '/login',
-    type: 'POST',
-    contentType: 'application/json',
-    data:  JSON.stringify({ loginVal:  loginVal , passwordVal : passwordVal}),
-    success: function (response) {
-        console.log("Login", response);
-      
-    },
-    error: function (error) {
-        console.error('Error in login:', error);
-    }
-});
-}
 /**
  * Returns the previous Card ui
  */

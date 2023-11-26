@@ -19,6 +19,7 @@
 	margin-top: 20px;
 	top: 250px;
   background-color: lightblue !important; 
+  border-radius: 45px;
   }
 
   h1{
@@ -28,14 +29,38 @@
   #cardHolder{
 	left: 40;
   }
-
+  @keyframes slideInFromLeft {
+    0% {
+      transform: translateX(-600%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  @keyframes slideInToRight {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(600%);
+    }
+  }
+  .slide-out {
+    animation: slideOutToRight 0.5s ease-in; /* Animation for sliding out to the right */
+  }
+  
   .card{
 	width:  200px;
+ 
   background-color: lightblue !important;
 	transition: transform 0.3s;
-  
+  border-radius: 45px;
+  animation: slideInFromLeft 0.5s ease-out;
   }
 
+.card:nth-child(even) {
+  animation-delay: 0.1s;
+}
   .card:hover{
 	transform: translateY(-30px);
   }
@@ -207,4 +232,36 @@ body.moon-bg {
 .button-19:active {
   border-width: 4px 0 0;
   background: none;
+}
+#overlay {
+  background: #ffffff;
+  color: #666666;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 5000;
+  top: 0;
+  left: 0;
+  float: left;
+  text-align: center;
+  padding-top: 25%;
+  opacity: .80;
+}
+
+.spinner {
+    margin: 0 auto;
+    height: 64px;
+    width: 64px;
+    animation: rotate 0.5s infinite linear;
+    border: 5px solid firebrick;
+    border-right-color: transparent;
+    border-radius: 50%;
+}
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

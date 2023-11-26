@@ -133,7 +133,7 @@ function hourlyChart(){
           "tooltip": {
             "font-family": "Roboto",
             "font-size": "15px",
-            "text": "It feels like %v at %T",
+            "text": "It feels like %v"+tempUnit+" at %kt",
             "text-align": "left",
             "border-radius": 5,
             "padding": 10
@@ -344,7 +344,7 @@ function precipationChart(){
           "tooltip": {
             "font-family": "Roboto",
             "font-size": "15px",
-            "text": "Precipation in inches %v F at %Time",
+            "text": "Precipation in inches %v at %kt",
             "text-align": "left",
             "border-radius": 5,
             "padding": 10
@@ -555,7 +555,7 @@ function humidityChart(){
           "tooltip": {
             "font-family": "Roboto",
             "font-size": "15px",
-            "text": "humidity  %v at %Time",
+            "text": "humidity  %v at %kt",
             "text-align": "left",
             "border-radius": 5,
             "padding": 10
