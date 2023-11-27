@@ -14,17 +14,65 @@ This web application is designed to provide users with real-time weather updates
 - **Dynamic Backgrounds**: The UI changes between day and night modes based on real-time data.
 - **Weather Charts**: View different weather charts from hourly temperature changes to Humidity changes.
 
-1. **Install Dependencies**: 
-pip install flask 
-pip install geocoder
 
-2. **Set API Key**: 
-- Set your WeatherAPI key in the application as `API_KEY`.
-- Set your WindyAPI key in the application as `API_KEY`.
+## Prerequisites
 
-3. **Run the Application**:
-python app.py
+- Python 3.x installed on your system
+- pip (Python package manager)
+- Internet connection
 
+## Installation Instructions
+
+### Step 1: Obtain the Source Code
+
+Clone the repository using Git or download the ZIP file of the source code and extract it.
+
+To clone the repository, open Command Prompt or PowerShell and execute:
+git clone https://github.com/fsevkli/WeatherApp.git
+
+
+Navigate to the directory where the repository has been cloned:
+cd WeatherApp
+
+
+### Step 2: Install Dependencies
+
+Install the required dependencies using pip. Open Command Prompt or PowerShell in the application directory and run:
+pip install requests flask geocoder
+
+
+### Step 3: Configure the Application
+
+Set the `FLASK_APP` environment variable to point to your `app.py` file.
+
+In Command Prompt:
+set FLASK_APP=app.py
+
+In PowerShell:
+$env:FLASK_APP="app.py"
+
+
+### Step 4: Launch the Application
+Run the application using the Flask command:
+flask run
+
+After executing the command, Flask will start a web server.
+
+### Step 5: Accessing the Application
+Open your web browser and go to the following URL to use the application:
+http://127.0.0.1:5000
+
+
+You should now be able to interact with the Flask Weather Application.
+
+## Troubleshooting
+
+If you encounter any issues:
+
+- Ensure that Python and pip are correctly installed and accessible from the command line.
+- Check if all dependencies are installed without errors.
+- Verify that the `API_KEY` in `app.py` is valid and not expired.
+- Make sure you're running the commands in the directory that contains `app.py`.
 
 ## How to Use
 
@@ -32,13 +80,6 @@ python app.py
 - **Search Function**: Input a location to get its weather forecast.
 - **Date Selector**: Choose a date for hourly weather data.
 - **Day/Night Checker**: Automatically adjusts UI based on the time of the day.
-
-## APIs Used
-
-- **WeatherAPI**: For weather data (requires an API key).
-- **Geocoder**: To determine the user's location via IP address.
-- **WindyApi**: For showing the wind map api (requires an API key)
-- **GoogleMapsAPI**: To get the location autoCorrect 
 
 ## Endpoints
 
