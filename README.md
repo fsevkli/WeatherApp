@@ -17,9 +17,12 @@ This web application is designed to provide users with real-time weather updates
 
 ## Prerequisites
 
-- Python 3.x installed on your system
+- [Python 3.11.x](https://www.python.org/downloads/release/python-3116/) installed on your system
 - pip (Python package manager)
 - Internet connection
+- A laptop
+- Hands
+- Half a brain
 
 ## Installation Instructions
 
@@ -28,39 +31,48 @@ This web application is designed to provide users with real-time weather updates
 Clone the repository using Git or download the ZIP file of the source code and extract it.
 
 To clone the repository, open Command Prompt or PowerShell and execute:
-git clone https://github.com/fsevkli/WeatherApp.git
+
+`git clone https://github.com/fsevkli/WeatherApp.git`
 
 
-Navigate to the directory where the repository has been cloned:
-cd WeatherApp
+Navigate to the directory where the repository has been cloned.
 
 
 ### Step 2: Install Dependencies
 
 Install the required dependencies using pip. Open Command Prompt or PowerShell in the application directory and run:
-pip install requests flask geocoder
+
+`pip install -r requirements.txt`
 
 
 ### Step 3: Configure the Application
 
 Set the `FLASK_APP` environment variable to point to your `app.py` file.
 
-In Command Prompt:
-set FLASK_APP=app.py
+In Terminal:
+```bash
+export FLASK_APP="app.py"
+```
 
 In PowerShell:
+```bash
 $env:FLASK_APP="app.py"
+```
 
 
 ### Step 4: Launch the Application
 Run the application using the Flask command:
+
+```bash
 flask run
+```
 
 After executing the command, Flask will start a web server.
 
 ### Step 5: Accessing the Application
 Open your web browser and go to the following URL to use the application:
-http://127.0.0.1:5000
+
+`http://127.0.0.1:5000`
 
 
 You should now be able to interact with the Flask Weather Application.
