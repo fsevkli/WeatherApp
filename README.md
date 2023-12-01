@@ -20,9 +20,6 @@ This web application is designed to provide users with real-time weather updates
 - [Python 3.11.x](https://www.python.org/downloads/release/python-3116/) installed on your system
 - pip (Python package manager)
 - Internet connection
-- A laptop
-- Hands
-- Half a brain
 
 ## Installation Instructions
 
