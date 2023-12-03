@@ -15,7 +15,7 @@ def get_location():
     g = geocoder.ip('me')
     return g.latlng
 
-def location(loc: str):
+def Call(loc: str):
     """Make an API call to weatherapi to get the weekly forecast."""
     loc = request.args.get('inputValue')
     loc = loc.split(" ")[0] 
@@ -88,7 +88,7 @@ def index():
     global forecastData
     forecastData = json.loads(response.read())
     if request.is_json:
-        return location(str)
+        return Call(str)
     return render_template("index.html", data=forecastData, location=forecastData['location'])
 
 if __name__ == '__main__':

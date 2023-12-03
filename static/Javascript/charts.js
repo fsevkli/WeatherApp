@@ -1,4 +1,13 @@
 
+/*
+* Toggle the Active Chart 
+*/
+function toggleActive(button) {
+  // Remove 'active' class from all buttons
+  $('.nav-link').removeClass('active');
+  // Add 'active' class to the clicked button
+  $(button).addClass('active');
+}
 
 /**
  * Renders a chart using ZingChart
