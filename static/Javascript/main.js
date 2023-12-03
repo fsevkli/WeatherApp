@@ -1,4 +1,3 @@
-
 // Get the current input value from the Location input field.
 var inputValue;
 
@@ -324,6 +323,35 @@ function ShowHourly(day) {
   });
 }
 
+// toggle text size
+let isEnlarged = false;
+let originalSizes = new Map();
+function toggleTextSize() {
+  // select all text elements on document
+  var allTextElements = document.querySelectorAll('*');
+
+  if (isEnlarged == false) {
+    allTextElements.forEach(function(element) {
+      var currentSize = window.getComputedStyle(element).fontSize;
+      // read in original font sizes
+      originalSizes.set(element, parseFloat(currentSize));
+      // increase font size by 2.5%
+      var newSize = parseFloat(currentSize) * 1.025;
+      element.style.fontSize = newSize + 'px';
+    });
+    // set true to properly toggle on next click
+    isEnlarged = true;
+  } else {
+    originalSizes.forEach(function(value, key) {
+      // set font size to stored value
+      key.style.fontSize = value + 'px';
+    });
+    originalSizes.clear();
+    // set false to trigger the toggle
+    isEnlarged = false;
+  }
+
+}
 /**
  * Returns the previous Card ui
  */
