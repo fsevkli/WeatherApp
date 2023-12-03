@@ -76,7 +76,7 @@ You should now be able to interact with the Flask Weather Application.
 
 ### For Detailed Instruction:
 
-[CLICK HERE](https://docs.google.com/document/d/1LG7uygfYRUJSqw9FJ0B9F0kqjMl15eIOQHYW3GCBmpE/edit?usp=sharing)
+[Google Document](https://docs.google.com/document/d/1LG7uygfYRUJSqw9FJ0B9F0kqjMl15eIOQHYW3GCBmpE/edit?usp=sharing)
 
 ## Troubleshooting
 
